@@ -1,7 +1,10 @@
 import "./App.css";
+import { Sidebar } from "./components/Sidebar/Sidebar";
 
-function App() {
-  return <div className="flex w-5">Hi!</div>;
-}
-
-export default App;
+export const App = () => {
+  return (
+    <>
+      <Sidebar />
+    </>
+  );
+};
