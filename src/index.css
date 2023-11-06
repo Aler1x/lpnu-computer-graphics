@@ -2,3 +2,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: row;
+}

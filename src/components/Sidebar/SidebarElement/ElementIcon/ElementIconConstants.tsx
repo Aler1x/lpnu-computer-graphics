@@ -1,15 +1,9 @@
-export enum ElementName {
-  HOME = "HOME",
-  FRACTALS = "FRACTALS",
-  COLORS = "COLORS",
-  SHAPES = "SHAPES",
-  HELP = "HELP",
-}
+import { Page } from "../../../../constants/Pages";
 
 const ICON_SIZE = 60;
 
 export const ElementIcons = {
-  [ElementName.HOME]: (
+  [Page.HOME]: (
     <svg
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -23,7 +17,7 @@ export const ElementIcons = {
       />
     </svg>
   ),
-  [ElementName.FRACTALS]: (
+  [Page.FRACTALS]: (
     <svg
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -40,7 +34,7 @@ export const ElementIcons = {
       />
     </svg>
   ),
-  [ElementName.COLORS]: (
+  [Page.COLORS]: (
     <svg
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -54,7 +48,7 @@ export const ElementIcons = {
       />
     </svg>
   ),
-  [ElementName.SHAPES]: (
+  [Page.SHAPES]: (
     <svg
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -68,7 +62,7 @@ export const ElementIcons = {
       />
     </svg>
   ),
-  [ElementName.HELP]: (
+  [Page.HELP]: (
     <svg
       width={ICON_SIZE}
       height={ICON_SIZE}

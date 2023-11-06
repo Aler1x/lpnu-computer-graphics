@@ -1,7 +1,8 @@
-import { ElementName, ElementIcons } from "./ElementIconConstants";
+import { ElementIcons } from "./ElementIconConstants";
+import { Page } from "../../../../constants/Pages";
 
 interface ElementIconProps {
-  elementName: ElementName;
+  elementName: Page;
   isFirstElement?: boolean;
 }
 

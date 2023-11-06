@@ -1,10 +1,10 @@
 import ElementIcon from "./ElementIcon/ElementIcon";
-import { ElementName } from "./ElementIcon/ElementIconConstants";
+import { Page } from "../../../constants/Pages";
 
 import "./SidebarElement.css";
 
 interface SidebarElementProps {
-  element: ElementName;
+  element: Page;
   active?: boolean;
   onClick?: () => void;
   isFirstElement?: boolean;
