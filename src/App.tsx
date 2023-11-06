@@ -7,7 +7,7 @@ import { MainContent } from "./components/MainContent/MainContent";
 import "./App.css";
 
 export const App = () => {
-  const [selectedElement, setSelectedElement] = useState<Page | null>(null);
+  const [selectedElement, setSelectedElement] = useState<Page>(Page.HOME);
 
   return (
     <>
