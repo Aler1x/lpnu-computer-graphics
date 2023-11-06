@@ -1,7 +1,18 @@
+import { useState } from "react";
+
+import { Sidebar } from "./components/Sidebar/Sidebar";
+import { Page } from "./constants/Pages";
+import { MainContent } from "./components/MainContent/MainContent";
+
 import "./App.css";
 
-function App() {
-  return <div className="flex w-5">Hi!</div>;
-}
+export const App = () => {
+  const [selectedElement, setSelectedElement] = useState<Page>(Page.HOME);
 
-export default App;
+  return (
+    <>
+      <Sidebar onItemSelect={(element: Page) => setSelectedElement(element)} />
+      <MainContent page={selectedElement} />
+    </>
+  );
+};

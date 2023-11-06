@@ -1,0 +1,17 @@
+.fractal-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 120px;
+  width: 350px;
+  color: #dcd7c9;
+  background-color: #2c3639;
+  border-radius: 12px;
+  margin-bottom: 40px;
+}
+
+.fractal-button-text {
+  font-size: 24px;
+}
