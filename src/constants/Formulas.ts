@@ -1,4 +1,4 @@
 export enum Formula {
-  FORMULA_1 = "Формула 1",
-  FORMULA_2 = "Формула 2",
+  FORMULA_1 = "Фрактал Ньютона",
+  FORMULA_2 = "Фрактал Вічека",
 }

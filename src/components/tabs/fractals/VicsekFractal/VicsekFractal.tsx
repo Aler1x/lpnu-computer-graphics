@@ -4,9 +4,10 @@ import "./VicsekFractal.css";
 
 type VicsekFractalProps = {
   iterations: number;
+  color: string;
 }
 
-const _VicsekFractal = ({ iterations }: VicsekFractalProps) => {
+const _VicsekFractal = ({ iterations, color }: VicsekFractalProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ const _VicsekFractal = ({ iterations }: VicsekFractalProps) => {
     if (!ctx) return;
   
     const iters = (iterations > 10) ? 5 : iterations; // Safety check
-    start(ctx, iters);
+    start(ctx, iters, color);
 
     const width = ctx.canvas.width;
     const height = ctx.canvas.height;
@@ -46,7 +47,7 @@ const _VicsekFractal = ({ iterations }: VicsekFractalProps) => {
       ctx.save();
       ctx.translate(x * (1 - scale), y * (1 - scale));
       ctx.scale(scale, scale);
-      start(ctx, iterations);
+      start(ctx, iterations, color);
       ctx.restore();
 
       throttleTimeout = setTimeout(() => {
@@ -60,12 +61,12 @@ const _VicsekFractal = ({ iterations }: VicsekFractalProps) => {
       ctx.clearRect(0, 0, width, height);
       canvas?.removeEventListener('wheel', zoom);
     }
-  }, [iterations]);
+  }, [iterations, color]);
 
 
   return (
     <>
-      <canvas id="fractal-canvas" className="canvas" width="600" height="600" ref={canvasRef} />
+      <canvas id="fractal-canvas" className="canvas" width="800" height="800" ref={canvasRef} />
     </>
   )
 }

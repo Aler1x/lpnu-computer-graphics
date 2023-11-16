@@ -46,6 +46,7 @@ const _NewtonFractal: FC<OwnProps> = ({ iterations = 50, hueColor = "colorful" }
   useEffect(() => {
     if (!gl || !program) return;
     setIterations(gl, program, iterations);
+    console.log(iterations);
   }, [iterations, gl, program])
 
   useEffect(() => {

@@ -92,6 +92,13 @@ vec4 getColor(float h, float s, float v) {
   return vec4(hsv2rgb(vec3(h, s, v)), 1);
 }
 
+float c_arg_sin(complex z) {
+  if (z == complex(0, 0)) {
+    error = true;
+  }
+  return sin(z.y/z.x);
+}
+
 vec4 newtonsMethod(complex c) {
   // x(n+1) = x(n) - f(n)/f'(n)
   // x(n) = c
@@ -139,9 +146,9 @@ vec4 newtonsMethod(complex c) {
   // red 0.0
 
   // Make color based on z
-  float hue = abs(c_arg(z)/2.0/PI); // a_tan(x)
+  float hue = abs(c_arg_sin(z)/2.0/PI); // a_tan(x)
   if (hueShift >= 0.0) {
-    hue = abs(c_arg(z)/10.0/PI - hueShift);
+    hue = abs(c_arg_sin(z)/10.0/PI - hueShift);
   }
 
   // 0.1 - 2.0
