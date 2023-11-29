@@ -66,7 +66,7 @@ const _VicsekFractal = ({ iterations, color }: VicsekFractalProps) => {
 
   return (
     <>
-      <canvas id="fractal-canvas" className="canvas" width="800" height="800" ref={canvasRef} />
+      <canvas id="fractal-canvas" className="canvas" width="700" height="700" ref={canvasRef} />
     </>
   )
 }

@@ -27,6 +27,9 @@ const _NewtonFractal: FC<OwnProps> = ({ iterations = 50, hueColor = "colorful" }
     const canvas = canvasRef.current;
     if (!canvas) return;
     const gl = canvas.getContext("webgl2")!;
+    if (!gl) {
+      console.error('WebGL 2.0 not supported');
+    }
 
     init(canvas, gl).then(setProgram);
     setGl(gl);
