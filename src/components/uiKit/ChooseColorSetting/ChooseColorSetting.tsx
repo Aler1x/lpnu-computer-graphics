@@ -1,5 +1,5 @@
 import { MouseEvent, useState } from "react";
-import { RightButton } from "../RightButton/RightButton"
+// import { RightButton } from "../RightButton/RightButton"
 import styles from "./ChooseColorSetting.module.css"
 import { ControlCard } from "../ControlCard/ControlCard";
 
@@ -9,7 +9,7 @@ type ChooseColorControlProps = {
   setColorIndex: (color: number) => void;
 }
 
-const COLORS_PER_ROW = 4;
+const COLORS_PER_ROW = 5;
 
 export const ColorTile = (
   { 
@@ -45,15 +45,15 @@ const ChooseColorControl = ({ colors, setColorIndex, colorIndex }: ChooseColorCo
     }
   } 
 
-  const nextColors = (e: MouseEvent) => {
-    e.stopPropagation();
-    if (currentPosition === colors.length - 1) {
-      setCurrentPosition(0);
-    } else {
-      console.log("new color", colors[currentPosition + 1]) 
-      setCurrentPosition(currentPosition + 1);
-    }
-  }
+  // const nextColors = (e: MouseEvent) => {
+  //   e.stopPropagation();
+  //   if (currentPosition === colors.length - 1) {
+  //     setCurrentPosition(0);
+  //   } else {
+  //     console.log("new color", colors[currentPosition + 1]) 
+  //     setCurrentPosition(currentPosition + 1);
+  //   }
+  // }
 
   return (
     <ControlCard >
@@ -63,7 +63,8 @@ const ChooseColorControl = ({ colors, setColorIndex, colorIndex }: ChooseColorCo
               currentPosition * COLORS_PER_ROW + i === colorIndex
             }/>
           ))}
-          {currentPosition < colors.length / COLORS_PER_ROW - 1 && <RightButton onClick={nextColors}/>}
+          {//currentPosition < colors.length / COLORS_PER_ROW - 1 && <RightButton onClick={nextColors}/>
+          }
         </div>
     </ControlCard>
   )
