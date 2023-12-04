@@ -11,7 +11,7 @@ export const MainContent = ({ page }: MainContentProps) => {
       case Page.FRACTALS:
         return <FractalTab />;
       default:
-        return <div>{page}</div>;
+        return <FractalTab />;
     }
   };
 

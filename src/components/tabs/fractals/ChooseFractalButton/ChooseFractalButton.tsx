@@ -1,13 +1,16 @@
-import { useState } from "react";
 import { Formula } from "../../../../constants/Formulas";
-import "./ChooseFractalButton.css";
-import { LeftButton } from "./LeftButton/LeftButton";
-import { RightButton } from "./RightButton/RightButton";
+import { LeftButton } from "../../../uiKit/LeftButton/LeftButton";
+import { RightButton } from "../../../uiKit/RightButton/RightButton";
 import { FunctionIcon } from "../../../uiKit/FunctionIcon";
+import "./ChooseFractalButton.css";
 
-export const ChooseFractalButton = () => {
+type ChooseFractalButtonProps = {
+  currentFractalIndex: number;
+  setCurrentFractalIndex: React.Dispatch<React.SetStateAction<number>>;
+};
+
+export const ChooseFractalButton = ({ currentFractalIndex, setCurrentFractalIndex }: ChooseFractalButtonProps) => {
   const formulas = Object.values(Formula);
-  const [currentFractalIndex, setCurrentFractalIndex] = useState(0);
 
   const handleLeftClick = () => {
     setCurrentFractalIndex((prevIndex) =>
