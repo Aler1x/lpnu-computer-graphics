@@ -1,5 +1,6 @@
 import { Page } from "../../constants/Pages";
 import { FractalTab } from "../tabs/fractals/FractalTab";
+import { ColorsTab } from "../tabs/colors/ColorsTab";
 
 interface MainContentProps {
   page: Page;
@@ -10,8 +11,10 @@ export const MainContent = ({ page }: MainContentProps) => {
     switch (page) {
       case Page.FRACTALS:
         return <FractalTab />;
+      case Page.COLORS:
+        return <ColorsTab />;
       default:
-        return <FractalTab />;
+        return <div className="flex justify-center">Not implemented yet</div>;
     }
   };
 

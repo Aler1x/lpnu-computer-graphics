@@ -15,7 +15,7 @@ export const Sidebar = ({ onItemSelect }: SidebarProps) => {
 
   useEffect(() => {
     onItemSelect(activeElement);
-  }, [activeElement]);
+  }, [activeElement, onItemSelect]);
 
   const getSidebarElements = () => {
     return Object.values(Page)

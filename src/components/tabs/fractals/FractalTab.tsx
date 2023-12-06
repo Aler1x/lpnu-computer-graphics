@@ -7,7 +7,7 @@ import ProgressBar from "../../uiKit/ProgressBar";
 import ChooseColorControl from "../../uiKit/ChooseColorSetting/ChooseColorSetting";
 import { VicsekFractal } from "./VicsekFractal/VicsekFractal";
 
-const colors = ["yellow", "green", "blue", "purple", "red", "colorful"] as const;
+const colors = ["yellow", "green", "blue", "purple", "red"] as const;
 
 export const FractalTab = () => {
   const [currentFractalIndex, setCurrentFractalIndex] = useState(0); // 1/2
