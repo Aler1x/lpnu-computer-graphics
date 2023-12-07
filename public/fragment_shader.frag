@@ -63,7 +63,6 @@ complex c_mul(complex x, complex y) {
 complex c_div(complex x, complex y) {
   float den = y.x * y.x + y.y * y.y;
   if (den == 0.0) {
-    // Can't divide by 0
     error = true;
     return c_nan;
   }
@@ -100,25 +99,15 @@ float c_arg_sin(complex z) {
 }
 
 vec4 newtonsMethod(complex c) {
-  // x(n+1) = x(n) - f(n)/f'(n)
-  // x(n) = c
   complex z = c;
-  int steps = 50;
+  int steps = 100;
 
   int power1 = 4;
   if (power != 0 && power < 8) {
     power1 = power;
   }
 
-  // complex m = 0.005 * (complex(1, 1) - 0.5 * complex(width, height));
   complex m = 0.5 * (mousepos - 0.5 * complex(width, height));
-
-
-  int iterations1 = 50;
-  if (iterations != 0 && iterations < 1000) {
-    iterations1 = iterations;
-  }
-
 
   for (int i = 0; i < iterations; i++) {
     complex f = c_add(c_pow(z,complex(power1, 0.0)),m); // z^power + m
@@ -139,27 +128,14 @@ vec4 newtonsMethod(complex c) {
     z = z1;
   }
 
-  // yellow 0.2
-  // green 0.4
-  // blue 0.6
-  // purple 0.9
-  // red 0.0
-
   // Make color based on z
-  float hue = abs(c_arg_sin(z)/2.0/PI); // a_tan(x)
-  if (hueShift >= 0.0) {
-    hue = abs(c_arg_sin(z)/10.0/PI - hueShift);
-  }
-
-  // 0.1 - 2.0
+  float hue = abs(c_arg_sin(z)/8.0/PI - hueShift);
 
   float saturation = 1.0 /sqrt(c_abs(z));
 
   if (c_abs(z) < 0.1) {
     saturation = 0.0;
   }
-
-  // 0.01 - 0.1
 
   float vibrance = max(1.0 - float(steps)*0.025, 0.0);
 
