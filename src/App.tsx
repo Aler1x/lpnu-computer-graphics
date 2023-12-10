@@ -1,18 +1,27 @@
-import { useState } from "react";
-
-import { Sidebar } from "./components/Sidebar/Sidebar";
-import { Page } from "./constants/Pages";
-import { MainContent } from "./components/MainContent/MainContent";
-
+// import { Sidebar } from "./components/Sidebar/Sidebar";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import "./App.css";
+import MainPage from "./pages/main/MainPage";
+import FractalPage from "./pages/fractals/FractalPage";
+import ColorsPage from "./pages/colors/ColorsPage";
 
 export const App = () => {
-  const [selectedElement, setSelectedElement] = useState<Page>(Page.HOME);
 
   return (
     <>
-      <Sidebar onItemSelect={(element: Page) => setSelectedElement(element)} />
-      <MainContent page={selectedElement} />
-    </>
+    <Router>
+      {/* <Sidebar /> */}
+      <Routes>
+        <Route path="/" element={<MainPage/>} />
+        <Route path="/fractals" element={<FractalPage/>} />
+        <Route path="/colors" element={<ColorsPage/>} />
+        {/* <Route path="/seat" element={} /> */}
+      </Routes>
+    </Router>
+  </>
+    // <>
+    //   <Sidebar onItemSelect={(element: Page) => setSelectedElement(element)} />
+      
+    // </>
   );
 };

@@ -1,4 +1,4 @@
-export type RBBPoint = {
+export type RGBPoint = {
   r: number
   g: number
   b: number
@@ -19,9 +19,9 @@ export type HSLPoint = {
 
 type Optional<T> = T | undefined;
 
-type Selection = { startX: number, startY: number, endX: number, endY: number };
+// type Selection = { startX: number, startY: number, endX: number, endY: number };
 
-export function rgbToCmyk({ r, g, b }: RBBPoint): CMYKPoint {
+export function rgbToCmyk({ r, g, b }: RGBPoint): CMYKPoint {
   const c = 1 - r / 255;
   const m = 1 - g / 255;
   const y = 1 - b / 255;
@@ -34,7 +34,7 @@ export function rgbToCmyk({ r, g, b }: RBBPoint): CMYKPoint {
   };
 }
 
-export function cmykToRgb({ c, m, y, k }: CMYKPoint): RBBPoint {
+export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
   return {
     r: 255 * (1 - c) * (1 - k),
     g: 255 * (1 - m) * (1 - k),
@@ -42,7 +42,7 @@ export function cmykToRgb({ c, m, y, k }: CMYKPoint): RBBPoint {
   };
 }
 
-export function rgbToHsl({ r, g, b }: RBBPoint): HSLPoint {
+export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
   r /= 255, g /= 255, b /= 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
   const l = (max + min) / 2;
@@ -67,7 +67,7 @@ export function rgbToHsl({ r, g, b }: RBBPoint): HSLPoint {
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
-export function hslToRgb({ h, s, l }: HSLPoint): RBBPoint {
+export function hslToRgb({ h, s, l }: HSLPoint): RGBPoint {
   let r, g, b;
 
   if (s === 0) {

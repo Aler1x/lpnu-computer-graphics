@@ -1,5 +1,5 @@
 import { FC, memo, useEffect, useRef, useState } from 'react'
-import init, { setHueShift, setIterations, setMousePos } from '../../../../utils/newton-fractal';
+import init, { setHueShift, setIterations, setMousePos } from '../../utils/newton-fractal';
 import "./NewtonFractal.css";
 
 type OwnProps = {

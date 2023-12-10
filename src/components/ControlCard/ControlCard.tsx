@@ -4,7 +4,7 @@ type OwnProps = {
   children: React.ReactNode;
 }
 
-export const ControlCard = (
+const ControlCard = (
   { children, ...divProps }: OwnProps & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) => {
   return (
@@ -13,3 +13,5 @@ export const ControlCard = (
     </div>
   );
 };
+
+export default ControlCard;

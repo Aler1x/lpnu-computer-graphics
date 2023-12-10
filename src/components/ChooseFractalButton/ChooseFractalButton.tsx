@@ -1,7 +1,7 @@
-import { Formula } from "../../../../constants/Formulas";
-import { LeftButton } from "../../../uiKit/LeftButton/LeftButton";
-import { RightButton } from "../../../uiKit/RightButton/RightButton";
-import { FunctionIcon } from "../../../uiKit/FunctionIcon";
+
+import { FunctionIcon } from "../../icons/FunctionIcon";
+import { LeftButton } from "../../icons/LeftButton";
+import { RightButton } from "../../icons/RightButton";
 import "./ChooseFractalButton.css";
 
 type ChooseFractalButtonProps = {
@@ -9,22 +9,21 @@ type ChooseFractalButtonProps = {
   setCurrentFractalIndex: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export const ChooseFractalButton = ({ currentFractalIndex, setCurrentFractalIndex }: ChooseFractalButtonProps) => {
-  const formulas = Object.values(Formula);
+const ChooseFractalButton = ({ currentFractalIndex, setCurrentFractalIndex }: ChooseFractalButtonProps) => {
 
   const handleLeftClick = () => {
     setCurrentFractalIndex((prevIndex) =>
-      prevIndex === 0 ? formulas.length - 1 : prevIndex - 1
+      prevIndex === 0 ? 1 : prevIndex - 1
     );
   };
 
   const handleRightClick = () => {
     setCurrentFractalIndex((prevIndex) =>
-      prevIndex === formulas.length - 1 ? 0 : prevIndex + 1
+      prevIndex === 1 ? 0 : prevIndex + 1
     );
   };
 
-  const currentFractal = formulas[currentFractalIndex];
+  const currentFractal = currentFractalIndex === 0 ? "Фрактал Ньютона" : "Фрактал Вічека";
 
   return (
     <div className="fractal-button-container">
@@ -37,3 +36,5 @@ export const ChooseFractalButton = ({ currentFractalIndex, setCurrentFractalInde
     </div>
   );
 };
+
+export default ChooseFractalButton;

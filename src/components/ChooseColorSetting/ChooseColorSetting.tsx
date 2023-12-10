@@ -1,7 +1,6 @@
 import { MouseEvent, useState } from "react";
-// import { RightButton } from "../RightButton/RightButton"
 import styles from "./ChooseColorSetting.module.css"
-import { ControlCard } from "../ControlCard/ControlCard";
+import ControlCard from "../ControlCard/ControlCard";
 
 type ChooseColorControlProps = {
   colors: string[];
@@ -44,17 +43,6 @@ const ChooseColorControl = ({ colors, setColorIndex, colorIndex }: ChooseColorCo
       setCurrentPosition(0);
     }
   } 
-
-  // const nextColors = (e: MouseEvent) => {
-  //   e.stopPropagation();
-  //   if (currentPosition === colors.length - 1) {
-  //     setCurrentPosition(0);
-  //   } else {
-  //     console.log("new color", colors[currentPosition + 1]) 
-  //     setCurrentPosition(currentPosition + 1);
-  //   }
-  // }
-
   return (
     <ControlCard >
         <div className={styles.container}>
@@ -63,8 +51,6 @@ const ChooseColorControl = ({ colors, setColorIndex, colorIndex }: ChooseColorCo
               currentPosition * COLORS_PER_ROW + i === colorIndex
             }/>
           ))}
-          {//currentPosition < colors.length / COLORS_PER_ROW - 1 && <RightButton onClick={nextColors}/>
-          }
         </div>
     </ControlCard>
   )
