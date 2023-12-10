@@ -45,7 +45,7 @@ export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
 export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
   r /= 255, g /= 255, b /= 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  const l = (max + min) / 2;
+  let l = (max + min) / 2;
   let h, s;
 
   if(max === min) {
@@ -64,7 +64,19 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
       h /= 6;
   }
 
-  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+  const h360 = Math.round(h * 360);
+  const hModifier = 0;
+  h = h360 + hModifier > 360 ? (h360 + hModifier) % 360 : h360 + hModifier;
+
+  const s100 = Math.round(s * 100);
+  const sModifier = 0;
+  s = s100 + sModifier > 100 ? 100 : s100 + sModifier;
+
+  const l100 = Math.round(l * 100);
+  const lModifier = 0;
+  l = l100 + lModifier > 100 ? 100 : l100 + lModifier;
+
+  return { h: h, s: s, l: l };
 }
 
 export function hslToRgb({ h, s, l }: HSLPoint): RGBPoint {
