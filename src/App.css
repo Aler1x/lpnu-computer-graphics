@@ -5,3 +5,11 @@ body {
 .align-center {
   align-items: center;
 }
+
+.width-100 {
+  width: 100%;
+}
+
+.width-420 {
+  width: 420px;
+}

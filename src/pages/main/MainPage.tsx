@@ -1,7 +1,10 @@
+import TabHeader from "../../components/TabHeader/TabHeader";
+
+
 const MainPage = () => {
   return (
-    <div>
-      <h1>Main Page</h1>
+    <div className="p-8">
+      <TabHeader title="Привіт! 👋" />
     </div>
   );
 }
