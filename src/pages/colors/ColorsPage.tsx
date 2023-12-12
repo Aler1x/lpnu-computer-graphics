@@ -80,7 +80,7 @@ const ColorsPage = () => {
     } else if (editingCanvas.current && originCanvas.current) {
       adjustForColor(originCanvas.current, editingCanvas.current, lightness-1, saturation-1);
     }
-  }, [saturation]);
+  }, [lightness, saturation, selectionEnd, selectionStart, showSelection]);
 
   useEffect(() => {
     if (showSelection && editingCanvas.current && originCanvas.current) {
@@ -88,7 +88,7 @@ const ColorsPage = () => {
     } else if (editingCanvas.current && originCanvas.current) {
       adjustForColor(originCanvas.current, editingCanvas.current, lightness-1, saturation-1);
     }
-  }, [lightness]);
+  }, [lightness, saturation, selectionEnd, selectionStart, showSelection]);
 
   useEffect(() => {
     // load images
