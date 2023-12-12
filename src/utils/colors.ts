@@ -236,13 +236,10 @@ function change(
 }
 
 function isColorCloseToColor(color1: HSLPoint) {
-  const tolerance = 20;
-
-  const hDiff = Math.abs(color1.h - 60);
-
-  return hDiff < tolerance;
+  return Math.abs(color1.h - 60) < 30;
 }
 
+// not in use
 export const setAllWhite = (
   canvas: HTMLCanvasElement,
   regionStart: { x: number; y: number },
