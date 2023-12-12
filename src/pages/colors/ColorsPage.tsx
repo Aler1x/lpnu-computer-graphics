@@ -8,10 +8,9 @@ import {
   // hslToRgb,
   rgbToCmyk,
   rgbToHsl,
+  getImagePixel,
   // cmykToRgb,
   // cmykToHsl,
-  getImagePixel,
-  setImagePixel,
   // imageDataToDataUrl
 } from "../../utils/colors";
 import ControlCard from "../../components/ControlCard/ControlCard";
@@ -26,8 +25,8 @@ const ColorsPage = () => {
   const cmykSelectionParent = useRef<HTMLDivElement>(null);
   const hslSelectionParent = useRef<HTMLDivElement>(null);
 
-  const cmykImage = useRef<HTMLImageElement>(null);
-  const hslImage = useRef<HTMLImageElement>(null);
+  const cmykCanvas = useRef<HTMLCanvasElement>(null);
+  const hslCanvas = useRef<HTMLCanvasElement>(null);
 
   const [lightness, setLightness] = useState(1); // [0.1] - [2.0]
   const [saturation, setSaturation] = useState(0); // 0 - 255
@@ -66,6 +65,26 @@ const ColorsPage = () => {
                             ${cmykValues.y.toFixed(2)}, 
                             ${cmykValues.k.toFixed(2)})`;
 
+  const loadImage = (imagePath: string, canvas: HTMLCanvasElement) => {
+    const ctx = canvas?.getContext("2d");
+
+    if (!ctx) {
+      console.error("Unable to get 2D context from canvas.");
+      return;
+    }
+
+    const image = new Image();
+
+    image.onload = () => {
+      if (canvas) {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      }
+    };
+    image.src = imagePath;
+  };
+
   useEffect(() => {
     setShowHoverSquare(!cmykShowSelection);
   }, [cmykShowSelection]);
@@ -77,6 +96,16 @@ const ColorsPage = () => {
   useEffect(() => {
     console.log("saturation changed");
   }, [saturation]);
+
+  useEffect(() => {
+    // load images
+    cmykImageSrc &&
+      cmykCanvas.current &&
+      loadImage(cmykImageSrc, cmykCanvas.current);
+    hslImageSrc &&
+      hslCanvas.current &&
+      loadImage(hslImageSrc, hslCanvas.current);
+  }, [cmykImageSrc, hslImageSrc]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -96,7 +125,7 @@ const ColorsPage = () => {
   };
 
   const handleMouseMove = (
-    event: React.MouseEvent<HTMLImageElement>,
+    event: React.MouseEvent<HTMLCanvasElement>,
     isCmykImage: boolean
   ) => {
     if (isCmykImage) {
@@ -113,7 +142,7 @@ const ColorsPage = () => {
       }
     }
 
-    const img = event.target as HTMLImageElement;
+    const img = event.target as HTMLCanvasElement;
     const { offsetX, offsetY } = event.nativeEvent;
     const { data } = getImagePixel(img, offsetX, offsetY)!;
     const [r, g, b] = data;
@@ -126,7 +155,7 @@ const ColorsPage = () => {
   };
 
   const handleMouseDown = (
-    event: React.MouseEvent<HTMLImageElement>,
+    event: React.MouseEvent<HTMLCanvasElement>,
     isCmykImage: boolean
   ) => {
     const { offsetX, offsetY } = event.nativeEvent;
@@ -204,10 +233,8 @@ const ColorsPage = () => {
                 <div className="flex flex-col align-center">
                   {fileName ? "CMYK image" : "No image selected"}
                   <div ref={cmykSelectionParent}>
-                    <img
-                      ref={cmykImage}
-                      src={cmykImageSrc ?? ""}
-                      alt="cmyk image"
+                    <canvas
+                      ref={cmykCanvas}
                       width={500}
                       height={500}
                       onMouseDown={(e) => handleMouseDown(e, true)}
@@ -225,10 +252,8 @@ const ColorsPage = () => {
                 <div className="flex flex-col align-center">
                   {fileName ? "HSL image" : "No image selected"}
                   <div ref={hslSelectionParent}>
-                    <img
-                      ref={hslImage}
-                      src={hslImageSrc ?? ""}
-                      alt="hsl image"
+                    <canvas
+                      ref={hslCanvas}
                       width={500}
                       height={500}
                       onMouseDown={(e) => handleMouseDown(e, false)}

@@ -124,18 +124,16 @@ export function hslToCmyk({ h, s, l }: HSLPoint): CMYKPoint {
 }
 
 export const getImagePixel = (
-  image: HTMLImageElement,
+  canvas: HTMLCanvasElement,
   offsetX = 0,
   offsetY = 0
 ) => {
-  const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  if (!ctx) return;
-
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0, image.width, image.height);
+  if (!ctx) {
+    console.log("couldnt get 2d context in getImagePixel");
+    return;
+  }
 
   return ctx.getImageData(offsetX, offsetY, 1, 1);
 };
