@@ -1,37 +1,46 @@
 import { MouseEvent, useState } from "react";
-import styles from "./ChooseColorSetting.module.css"
+import styles from "./ChooseColorSetting.module.css";
 import ControlCard from "../ControlCard/ControlCard";
 
 type ChooseColorControlProps = {
   colors: string[];
   colorIndex: number;
   setColorIndex: (color: number) => void;
-}
+};
 
 const COLORS_PER_ROW = 5;
 
-export const ColorTile = (
-  { 
-    color, selected, ...props 
-  }: { color: string, selected: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>
-) => {
-  console.log(selected)
-
+export const ColorTile = ({
+  color,
+  selected,
+  ...props
+}: {
+  color: string;
+  selected: boolean;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   let backgroundColor = color;
 
   if (color === "colorful") {
-    backgroundColor = "linear-gradient(45deg, firebrick, goldenrod, seagreen, darkblue)";
+    backgroundColor =
+      "linear-gradient(45deg, firebrick, goldenrod, seagreen, darkblue)";
   }
 
   return (
-    <button {...props} 
-      className={`w-[2rem] h-[2rem] rounded-[.5rem] border-none m-1 ${selected && "border-4 border-[#dcd7c9] border-solid"}`}
+    <button
+      {...props}
+      className={`w-[2rem] h-[2rem] rounded-[.5rem] border-none m-1 ${
+        selected && "border-4 border-[#dcd7c9] border-solid"
+      }`}
       style={{ background: backgroundColor, borderStyle: "solid" }}
     />
-  )
-}
+  );
+};
 
-const ChooseColorControl = ({ colors, setColorIndex, colorIndex }: ChooseColorControlProps) => {
+const ChooseColorControl = ({
+  colors,
+  setColorIndex,
+  colorIndex,
+}: ChooseColorControlProps) => {
   const [currentPosition, setCurrentPosition] = useState(0);
 
   const onClick = (e: MouseEvent, colorIndex: number) => {
@@ -42,18 +51,26 @@ const ChooseColorControl = ({ colors, setColorIndex, colorIndex }: ChooseColorCo
       setColorIndex(colorIndex);
       setCurrentPosition(0);
     }
-  } 
+  };
   return (
-    <ControlCard >
-        <div className={styles.container}>
-          {colors.slice(currentPosition * COLORS_PER_ROW, currentPosition * COLORS_PER_ROW + COLORS_PER_ROW).map((color, i) => (
-            <ColorTile color={color} onClick={(e) => onClick(e, currentPosition * COLORS_PER_ROW + i)} key={i} selected={
-              currentPosition * COLORS_PER_ROW + i === colorIndex
-            }/>
+    <ControlCard>
+      <div className={styles.container}>
+        {colors
+          .slice(
+            currentPosition * COLORS_PER_ROW,
+            currentPosition * COLORS_PER_ROW + COLORS_PER_ROW
+          )
+          .map((color, i) => (
+            <ColorTile
+              color={color}
+              onClick={(e) => onClick(e, currentPosition * COLORS_PER_ROW + i)}
+              key={i}
+              selected={currentPosition * COLORS_PER_ROW + i === colorIndex}
+            />
           ))}
-        </div>
+      </div>
     </ControlCard>
-  )
-}
+  );
+};
 
-export default ChooseColorControl
+export default ChooseColorControl;
