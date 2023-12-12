@@ -8,7 +8,7 @@ import {
   rgbToHsl,
   getImagePixel,
   adjustForColor,
-  adjustForColorSelection
+  adjustForColorSelection,
 } from "../../utils/colors";
 import ControlCard from "../../components/ControlCard/ControlCard";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
@@ -76,17 +76,41 @@ const ColorsPage = () => {
 
   useEffect(() => {
     if (showSelection && editingCanvas.current && originCanvas.current) {
-      adjustForColorSelection(originCanvas.current, editingCanvas.current, lightness-1, saturation-1, selectionStart, selectionEnd);
+      adjustForColorSelection(
+        originCanvas.current,
+        editingCanvas.current,
+        lightness - 1,
+        saturation - 1,
+        selectionStart,
+        selectionEnd
+      );
     } else if (editingCanvas.current && originCanvas.current) {
-      adjustForColor(originCanvas.current, editingCanvas.current, lightness-1, saturation-1);
+      adjustForColor(
+        originCanvas.current,
+        editingCanvas.current,
+        lightness - 1,
+        saturation - 1
+      );
     }
   }, [lightness, saturation, selectionEnd, selectionStart, showSelection]);
 
   useEffect(() => {
     if (showSelection && editingCanvas.current && originCanvas.current) {
-      adjustForColorSelection(originCanvas.current, editingCanvas.current, lightness-1, saturation-1, selectionStart, selectionEnd);
+      adjustForColorSelection(
+        originCanvas.current,
+        editingCanvas.current,
+        lightness - 1,
+        saturation - 1,
+        selectionStart,
+        selectionEnd
+      );
     } else if (editingCanvas.current && originCanvas.current) {
-      adjustForColor(originCanvas.current, editingCanvas.current, lightness-1, saturation-1);
+      adjustForColor(
+        originCanvas.current,
+        editingCanvas.current,
+        lightness - 1,
+        saturation - 1
+      );
     }
   }, [lightness, saturation, selectionEnd, selectionStart, showSelection]);
 
@@ -116,9 +140,7 @@ const ColorsPage = () => {
     }
   };
 
-  const handleMouseMove = (
-    event: React.MouseEvent<HTMLCanvasElement>,
-  ) => {
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (isSelecting) {
       const { offsetX, offsetY } = event.nativeEvent;
       setSelectionEnd({ x: offsetX, y: offsetY });
@@ -136,19 +158,17 @@ const ColorsPage = () => {
     setCursorPos({ x: event.clientX, y: event.clientY });
   };
 
-  const handleMouseDown = (
-    event: React.MouseEvent<HTMLCanvasElement>,
-  ) => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = event.nativeEvent;
 
-    if(showSelection) {
+    if (showSelection) {
       setShowSelection(false);
     }
-      setShowSelection(true);
-      setSelectionStart({ x: offsetX, y: offsetY });
-      setSelectionEnd({ x: offsetX, y: offsetY });
-      setIsSelecting(true);
-      return;
+    setShowSelection(true);
+    setSelectionStart({ x: offsetX, y: offsetY });
+    setSelectionEnd({ x: offsetX, y: offsetY });
+    setIsSelecting(true);
+    return;
   };
 
   const handleMouseUp = () => {
@@ -189,7 +209,9 @@ const ColorsPage = () => {
                       height={500}
                       onMouseDown={(e) => handleMouseDown(e)}
                       onMouseMove={(e) => handleMouseMove(e)}
-                      onMouseEnter={() => setShowHoverSquare(originImage ? true : false)}
+                      onMouseEnter={() =>
+                        setShowHoverSquare(originImage ? true : false)
+                      }
                       onMouseLeave={() => setShowHoverSquare(false)}
                       onMouseUp={() => handleMouseUp()}
                       draggable={false}
@@ -207,7 +229,9 @@ const ColorsPage = () => {
                       width={500}
                       height={500}
                       onMouseMove={(e) => handleMouseMove(e)}
-                      onMouseEnter={() => setShowHoverSquare(originImage ? true : false)}
+                      onMouseEnter={() =>
+                        setShowHoverSquare(originImage ? true : false)
+                      }
                       onMouseLeave={() => setShowHoverSquare(false)}
                       draggable={false}
                     />
