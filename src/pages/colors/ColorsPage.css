@@ -1,0 +1,9 @@
+.hover-square {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #000;
+  pointer-events: none;
+  z-index: 1000;
+  border-radius: .25rem;
+}

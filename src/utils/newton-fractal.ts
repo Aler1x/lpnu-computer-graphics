@@ -23,7 +23,7 @@ function createCanvas(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext) {
   let program: WebGLProgram;
   try {
     program = createProgram(gl, vertexShader, fragmentShader)!;
-    console.log("Compiled!", program)
+    console.info("Compiled!", program)
   } catch (e) {
     throw "Didn't compile!";
   }

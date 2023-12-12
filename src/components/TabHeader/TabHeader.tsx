@@ -5,11 +5,13 @@ interface TabHeaderProps {
   subtitle?: string;
 }
 
-export const TabHeader = ({ title, subtitle }: TabHeaderProps) => {
+const TabHeader = ({ title, subtitle }: TabHeaderProps) => {
   return (
     <>
       <h1>{title}</h1>
-      <h2>{subtitle}</h2>
+      { subtitle && <h2>{subtitle}</h2> }
     </>
   );
 };
+
+export default TabHeader;

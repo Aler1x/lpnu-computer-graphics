@@ -1,21 +1,26 @@
-import ElementIcon from "./ElementIcon/ElementIcon";
-import { Page } from "../../../constants/Pages";
-
 import "./SidebarElement.css";
+import { MainIcon, FractalIcon, ColorsIcon, ShapesIcon, HelpIcon } from "../../../icons/ElementIconConstants";
 
 interface SidebarElementProps {
-  element: Page;
+  icon: number
   active?: boolean;
-  onClick?: () => void;
+  onClick: (icon: number) => void;
   isFirstElement?: boolean;
 }
 
 export const SidebarElement = ({
-  element,
+  icon,
   active,
   onClick,
   isFirstElement = false,
 }: SidebarElementProps) => {
+  const icons = [MainIcon, FractalIcon, ColorsIcon, ShapesIcon, HelpIcon];
+
+  const handleClick = () => {
+    if (active) return;
+    onClick(icon);
+  }
+
   return (
     <li>
       <a
@@ -23,9 +28,9 @@ export const SidebarElement = ({
         className={`flex items-center p-2 rounded-lg group ${
           active && (isFirstElement ? "selected-first-element" : "selected")
         }`}
-        onClick={onClick}
+        onClick={handleClick}
       >
-        <ElementIcon elementName={element} isFirstElement={isFirstElement} />
+        { icons[icon]() }
       </a>
     </li>
   );

@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef } from "react";
-import { start } from "../../../../utils/vicsek-fractal";
+import { start } from "../../utils/vicsek-fractal";
 import "./VicsekFractal.css";
 
 type VicsekFractalProps = {

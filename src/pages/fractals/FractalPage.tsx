@@ -1,15 +1,15 @@
-import { TabHeader } from "../TabHeader/TabHeader";
-import { NewtonFractal} from "./NewtonFractal/NewtonFractal";
-import { ChooseFractalButton } from "./ChooseFractalButton/ChooseFractalButton";
+import TabHeader from "../../components/TabHeader/TabHeader";
+import { NewtonFractal} from "../../components/NewtonFractal/NewtonFractal";
+import { VicsekFractal } from "../../components/VicsekFractal/VicsekFractal";
+import ChooseFractalButton from "../../components/ChooseFractalButton/ChooseFractalButton";
 import { useEffect, useState } from "react";
-import { ControlCard } from "../../uiKit/ControlCard/ControlCard";
-import ProgressBar from "../../uiKit/ProgressBar";
-import ChooseColorControl from "../../uiKit/ChooseColorSetting/ChooseColorSetting";
-import { VicsekFractal } from "./VicsekFractal/VicsekFractal";
+import ControlCard from "../../components/ControlCard/ControlCard";
+import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import ChooseColorControl from "../../components/ChooseColorSetting/ChooseColorSetting";
 
-const colors = ["yellow", "green", "blue", "purple", "red", "colorful"] as const;
+const colors = ["yellow", "green", "blue", "purple", "red"] as const;
 
-export const FractalTab = () => {
+const FractalPage = () => {
   const [currentFractalIndex, setCurrentFractalIndex] = useState(0); // 1/2
   const [iterations, setIterations] = useState(1); // 1-100
   const [colorIndex, setColorIndex] = useState(0); // 0-4
@@ -34,7 +34,7 @@ export const FractalTab = () => {
           <VicsekFractal iterations={iterations} color={colors[colorIndex]}/>
         )}
         <div className="flex flex-col p-3 gap-3">
-          <ChooseFractalButton currentFractalIndex={currentFractalIndex} setCurrentFractalIndex={setCurrentFractalIndex} />
+          <ChooseFractalButton currentFractalIndex={currentFractalIndex} setCurrentFractalIndex={setCurrentFractalIndex}  />
           <ControlCard>
             <ProgressBar progressState={[iterations, setIterations]} steps={steps} max={max} title="Ітерації" />
           </ControlCard>
@@ -44,3 +44,5 @@ export const FractalTab = () => {
     </div>
   );
 };
+
+export default FractalPage;

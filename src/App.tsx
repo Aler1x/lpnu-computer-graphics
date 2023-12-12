@@ -1,18 +1,27 @@
-import { useState } from "react";
-
-import { Sidebar } from "./components/Sidebar/Sidebar";
-import { Page } from "./constants/Pages";
-import { MainContent } from "./components/MainContent/MainContent";
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainPage from "./pages/main/MainPage";
+import FractalPage from "./pages/fractals/FractalPage";
+import ColorsPage from "./pages/colors/ColorsPage";
+import ShapePage from './pages/shape/ShapePage';
+import { Sidebar } from './components/Sidebar/Sidebar';
+import { useState } from 'react';
 import "./App.css";
 
+
 export const App = () => {
-  const [selectedElement, setSelectedElement] = useState<Page>(Page.HOME);
+  const [showHelp, setShowHelp] = useState(false);
 
   return (
     <>
-      <Sidebar onItemSelect={(element: Page) => setSelectedElement(element)} />
-      <MainContent page={selectedElement} />
-    </>
+    <Router>
+      <Sidebar showHelp={showHelp} setShowHelp={setShowHelp} />
+      <Routes>
+        <Route path="/" element={<MainPage/>} />
+        <Route path="/fractals" element={<FractalPage/>} />
+        <Route path="/colors" element={<ColorsPage/>} />
+        <Route path="/shapes" element={<ShapePage/>} />
+      </Routes>
+    </Router>
+  </>
   );
 };
