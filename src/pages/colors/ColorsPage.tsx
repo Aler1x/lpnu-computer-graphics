@@ -4,40 +4,32 @@ import {
   RGBPoint,
   HSLPoint,
   CMYKPoint,
-  // hslToCmyk,
-  // hslToRgb,
   rgbToCmyk,
   rgbToHsl,
   getImagePixel,
-  setAllWhite,
-  // cmykToRgb,
-  // cmykToHsl,
-  // imageDataToDataUrl
+  adjustForColor,
+  adjustForColorSelection
 } from "../../utils/colors";
 import ControlCard from "../../components/ControlCard/ControlCard";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import { UploadImage } from "../../icons/UploadImage";
 import "./ColorsPage.css";
 
-// TODO - slider for saturation must make changes to image
-// TODO - slider for lightness must make changes to image
-
 const ColorsPage = () => {
-  const cmykSelectionParent = useRef<HTMLDivElement>(null);
-  const hslSelectionParent = useRef<HTMLDivElement>(null);
+  const originSelectionParent = useRef<HTMLDivElement>(null);
 
-  const cmykCanvas = useRef<HTMLCanvasElement>(null);
-  const hslCanvas = useRef<HTMLCanvasElement>(null);
+  const originCanvas = useRef<HTMLCanvasElement>(null);
+  const editingCanvas = useRef<HTMLCanvasElement>(null);
 
-  const [lightness, setLightness] = useState(1); // [0.1] - [2.0]
-  const [saturation, setSaturation] = useState(0); // 0 - 255
+  const [lightness, setLightness] = useState(1.0); // [0.0] - [2.0]
+  const [saturation, setSaturation] = useState(1.0); // [0.0] - [2.0]
   const [showHoverSquare, setShowHoverSquare] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
 
   const [fileName, setFileName] = useState<string | null>();
   const [imageSrc, setImageSrc] = useState<string | null>();
-  const [cmykImageSrc, setCmykImageSrc] = useState<string | null>();
-  const [hslImageSrc, setHslImageSrc] = useState<string | null>();
+  const [originImage, setOriginImage] = useState<string | null>();
+  const [editingImage, setEditingImage] = useState<string | null>();
 
   const [rgbValues, setRgbValues] = useState<RGBPoint>({ r: 0, g: 0, b: 0 });
   const [hslValues, setHslValues] = useState<HSLPoint>({ h: 0, s: 0, l: 0 });
@@ -48,15 +40,10 @@ const ColorsPage = () => {
     k: 0,
   });
 
-  const [cmykSelectionStart, setCmykSelectionStart] = useState({ x: 0, y: 0 });
-  const [cmykSelectionEnd, setCmykSelectionEnd] = useState({ x: 0, y: 0 });
-  const [cmykIsSelecting, setCmykIsSelecting] = useState(false);
-  const [cmykShowSelection, setCmykShowSelection] = useState(false);
-
-  const [hslSelectionStart, setHslSelectionStart] = useState({ x: 0, y: 0 });
-  const [hslSelectionEnd, setHslSelectionEnd] = useState({ x: 0, y: 0 });
-  const [hslIsSelecting, setHslIsSelecting] = useState(false);
-  const [hslShowSelection, setHslShowSelection] = useState(false);
+  const [selectionStart, setSelectionStart] = useState({ x: 0, y: 0 });
+  const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [showSelection, setShowSelection] = useState(false);
 
   const hoveredColorRGB = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
   const hoveredColorHSL = `hsl(${hslValues.h}, ${hslValues.s}%, ${hslValues.l}%)`;
@@ -78,8 +65,9 @@ const ColorsPage = () => {
 
     image.onload = () => {
       if (canvas) {
-        canvas.width = image.width;
-        canvas.height = image.height;
+        // not make canvas size of image because it broke site
+        // canvas.width = image.width;
+        // canvas.height = image.height;
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
       }
     };
@@ -87,36 +75,30 @@ const ColorsPage = () => {
   };
 
   useEffect(() => {
-    setShowHoverSquare(!cmykShowSelection);
-  }, [cmykShowSelection]);
-
-  useEffect(() => {
-    setShowHoverSquare(!hslShowSelection);
-  }, [hslShowSelection]);
-
-  useEffect(() => {
-    console.log("saturation changed");
-    if (hslShowSelection && hslCanvas.current) {
-      console.log("setting all to white for hsl: ");
-      console.log(hslCanvas.current, hslSelectionStart, hslSelectionEnd);
-      setAllWhite(hslCanvas.current, hslSelectionStart, hslSelectionEnd);
-    }
-    if (cmykShowSelection && cmykCanvas.current) {
-      console.log("setting all to white for cmyk: ");
-      console.log(cmykCanvas.current, cmykSelectionStart, cmykSelectionEnd);
-      setAllWhite(cmykCanvas.current, cmykSelectionStart, cmykSelectionEnd);
+    if (showSelection && editingCanvas.current && originCanvas.current) {
+      adjustForColorSelection(originCanvas.current, editingCanvas.current, lightness-1, saturation-1, selectionStart, selectionEnd);
+    } else if (editingCanvas.current && originCanvas.current) {
+      adjustForColor(originCanvas.current, editingCanvas.current, lightness-1, saturation-1);
     }
   }, [saturation]);
 
   useEffect(() => {
+    if (showSelection && editingCanvas.current && originCanvas.current) {
+      adjustForColorSelection(originCanvas.current, editingCanvas.current, lightness-1, saturation-1, selectionStart, selectionEnd);
+    } else if (editingCanvas.current && originCanvas.current) {
+      adjustForColor(originCanvas.current, editingCanvas.current, lightness-1, saturation-1);
+    }
+  }, [lightness]);
+
+  useEffect(() => {
     // load images
-    cmykImageSrc &&
-      cmykCanvas.current &&
-      loadImage(cmykImageSrc, cmykCanvas.current);
-    hslImageSrc &&
-      hslCanvas.current &&
-      loadImage(hslImageSrc, hslCanvas.current);
-  }, [cmykImageSrc, hslImageSrc]);
+    originImage &&
+      originCanvas.current &&
+      loadImage(originImage, originCanvas.current);
+    editingImage &&
+      editingCanvas.current &&
+      loadImage(editingImage, editingCanvas.current);
+  }, [originImage, editingImage]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -126,10 +108,9 @@ const ColorsPage = () => {
       reader.onload = function (e) {
         const result = String(e.target?.result);
         setImageSrc(result);
-        setCmykImageSrc(result);
-        setHslImageSrc(result);
-        setCmykShowSelection(false);
-        setHslShowSelection(false);
+        setOriginImage(result);
+        setEditingImage(result);
+        setShowSelection(false);
       };
       reader.readAsDataURL(file);
     }
@@ -137,20 +118,10 @@ const ColorsPage = () => {
 
   const handleMouseMove = (
     event: React.MouseEvent<HTMLCanvasElement>,
-    isCmykImage: boolean
   ) => {
-    if (isCmykImage) {
-      // CMYK image selection
-      if (cmykIsSelecting) {
-        const { offsetX, offsetY } = event.nativeEvent;
-        setCmykSelectionEnd({ x: offsetX, y: offsetY });
-      }
-    } else {
-      // HSL image selection
-      if (hslIsSelecting) {
-        const { offsetX, offsetY } = event.nativeEvent;
-        setHslSelectionEnd({ x: offsetX, y: offsetY });
-      }
+    if (isSelecting) {
+      const { offsetX, offsetY } = event.nativeEvent;
+      setSelectionEnd({ x: offsetX, y: offsetY });
     }
 
     const img = event.target as HTMLCanvasElement;
@@ -167,67 +138,35 @@ const ColorsPage = () => {
 
   const handleMouseDown = (
     event: React.MouseEvent<HTMLCanvasElement>,
-    isCmykImage: boolean
   ) => {
     const { offsetX, offsetY } = event.nativeEvent;
-    if (!isCmykImage && hslShowSelection) {
-      setHslShowSelection(false);
+
+    if(showSelection) {
+      setShowSelection(false);
+    }
+      setShowSelection(true);
+      setSelectionStart({ x: offsetX, y: offsetY });
+      setSelectionEnd({ x: offsetX, y: offsetY });
+      setIsSelecting(true);
       return;
-    }
-    if (isCmykImage && cmykShowSelection) {
-      setCmykShowSelection(false);
-      return;
-    }
-    if (isCmykImage) {
-      setCmykShowSelection(true);
-      setCmykSelectionStart({ x: offsetX, y: offsetY });
-      setCmykSelectionEnd({ x: offsetX, y: offsetY });
-      setCmykIsSelecting(true);
-    } else {
-      setHslShowSelection(true);
-      setHslSelectionStart({ x: offsetX, y: offsetY });
-      setHslSelectionEnd({ x: offsetX, y: offsetY });
-      setHslIsSelecting(true);
-    }
   };
 
-  const handleMouseUp = (isCmykImage: boolean) => {
-    if (isCmykImage) {
-      setCmykIsSelecting(false);
-    } else {
-      setHslIsSelecting(false);
-    }
+  const handleMouseUp = () => {
+    setIsSelecting(false);
   };
 
-  const getCMYKSelectionStyle = () => {
-    const width = Math.abs(cmykSelectionEnd.x - cmykSelectionStart.x);
-    const height = Math.abs(cmykSelectionEnd.y - cmykSelectionStart.y);
-    const left = Math.min(cmykSelectionEnd.x, cmykSelectionStart.x);
-    const top = Math.min(cmykSelectionEnd.y, cmykSelectionStart.y);
-    const parent = cmykSelectionParent?.current?.getBoundingClientRect();
+  const getSelectionStyle = () => {
+    const width = Math.abs(selectionEnd.x - selectionStart.x);
+    const height = Math.abs(selectionEnd.y - selectionStart.y);
+    const left = Math.min(selectionEnd.x, selectionStart.x);
+    const top = Math.min(selectionEnd.y, selectionStart.y);
+    const parent = originSelectionParent?.current?.getBoundingClientRect();
     return {
       left: `${left + (parent ? parent.left : 0)}px`,
       top: `${top + (parent ? parent.top : 0)}px`,
       width: `${width}px`,
       height: `${height}px`,
-      border: cmykShowSelection ? "5px dashed red" : "none",
-      position: "absolute",
-      pointerEvents: "none",
-    } as const;
-  };
-
-  const getHSLSelectionStyle = () => {
-    const width = Math.abs(hslSelectionEnd.x - hslSelectionStart.x);
-    const height = Math.abs(hslSelectionEnd.y - hslSelectionStart.y);
-    const left = Math.min(hslSelectionEnd.x, hslSelectionStart.x);
-    const top = Math.min(hslSelectionEnd.y, hslSelectionStart.y);
-    const parent = hslSelectionParent?.current?.getBoundingClientRect();
-    return {
-      left: `${left + (parent ? parent.left : 0)}px`,
-      top: `${top + (parent ? parent.top : 0)}px`,
-      width: `${width}px`,
-      height: `${height}px`,
-      border: hslShowSelection ? "5px dashed red" : "none",
+      border: showSelection ? "5px dashed red" : "none",
       position: "absolute",
       pointerEvents: "none",
     } as const;
@@ -242,41 +181,38 @@ const ColorsPage = () => {
             <div className="flex flex-row gap-28">
               <div>
                 <div className="flex flex-col align-center">
-                  {fileName ? "CMYK image" : "No image selected"}
-                  <div ref={cmykSelectionParent}>
+                  {fileName ? "Origin image" : "No image selected"}
+                  <div ref={originSelectionParent}>
                     <canvas
-                      ref={cmykCanvas}
+                      ref={originCanvas}
                       width={500}
                       height={500}
-                      onMouseDown={(e) => handleMouseDown(e, true)}
-                      onMouseMove={(e) => handleMouseMove(e, true)}
-                      onMouseEnter={() => setShowHoverSquare(true)}
+                      onMouseDown={(e) => handleMouseDown(e)}
+                      onMouseMove={(e) => handleMouseMove(e)}
+                      onMouseEnter={() => setShowHoverSquare(originImage ? true : false)}
                       onMouseLeave={() => setShowHoverSquare(false)}
-                      onMouseUp={() => handleMouseUp(true)}
+                      onMouseUp={() => handleMouseUp()}
                       draggable={false}
                     />
                   </div>
                 </div>
-                <div id="cmykselection" style={getCMYKSelectionStyle()}></div>
+                <div id="cmykselection" style={getSelectionStyle()}></div>
               </div>
               <div>
                 <div className="flex flex-col align-center">
-                  {fileName ? "HSL image" : "No image selected"}
-                  <div ref={hslSelectionParent}>
+                  {fileName ? "Edited image" : "No image selected"}
+                  <div>
                     <canvas
-                      ref={hslCanvas}
+                      ref={editingCanvas}
                       width={500}
                       height={500}
-                      onMouseDown={(e) => handleMouseDown(e, false)}
-                      onMouseMove={(e) => handleMouseMove(e, false)}
-                      onMouseEnter={() => setShowHoverSquare(true)}
+                      onMouseMove={(e) => handleMouseMove(e)}
+                      onMouseEnter={() => setShowHoverSquare(originImage ? true : false)}
                       onMouseLeave={() => setShowHoverSquare(false)}
-                      onMouseUp={() => handleMouseUp(false)}
                       draggable={false}
                     />
                   </div>
                 </div>
-                <div id="hslselection" style={getHSLSelectionStyle()}></div>
               </div>
             </div>
           </div>
@@ -320,17 +256,18 @@ const ColorsPage = () => {
           <ControlCard>
             <ProgressBar
               progressState={[lightness, setLightness]}
-              steps={20}
-              max={2.0}
-              toFixed={1}
+              steps={40}
+              max={2}
+              toFixed={2}
               title="Світота"
             />
           </ControlCard>
           <ControlCard>
             <ProgressBar
               progressState={[saturation, setSaturation]}
-              steps={255}
-              max={255}
+              steps={40}
+              max={2}
+              toFixed={2}
               title="Насиченість"
             />
           </ControlCard>

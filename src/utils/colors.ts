@@ -19,8 +19,6 @@ export type HSLPoint = {
 
 type Optional<T> = T | undefined;
 
-// type Selection = { startX: number, startY: number, endX: number, endY: number };
-
 export function rgbToCmyk({ r, g, b }: RGBPoint): CMYKPoint {
   const c = 1 - r / 255;
   const m = 1 - g / 255;
@@ -43,10 +41,12 @@ export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
 }
 
 export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
-  (r /= 255), (g /= 255), (b /= 255);
-  const max = Math.max(r, g, b),
-    min = Math.min(r, g, b);
-  let l = (max + min) / 2;
+  (r /= 255), 
+  (g /= 255), 
+  (b /= 255);
+
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
   let h, s;
 
   if (max === min) {
@@ -55,15 +55,9 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
     }
     if (h == undefined) {
       throw new Error("h is undefined");
@@ -71,49 +65,43 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
     h /= 6;
   }
 
-  const h360 = Math.round(h * 360);
-  const hModifier = 0;
-  h = h360 + hModifier > 360 ? (h360 + hModifier) % 360 : h360 + hModifier;
-
-  const s100 = Math.round(s * 100);
-  const sModifier = 0;
-  s = s100 + sModifier > 100 ? 100 : s100 + sModifier;
-
-  const l100 = Math.round(l * 100);
-  const lModifier = 0;
-  l = l100 + lModifier > 100 ? 100 : l100 + lModifier;
-
-  return { h: h, s: s, l: l };
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
-export function hslToRgb({ h, s, l }: HSLPoint): RGBPoint {
-  let r, g, b;
+export function hslToRgb(hsl: HSLPoint): RGBPoint {
+  const h = hsl.h;
+  const s = hsl.s / 100;
+  const l = hsl.l / 100;
 
-  if (s === 0) {
-    r = g = b = l; // achromatic
-  } else {
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-    r = hueToRgb(p, q, h + 1 / 3);
-    g = hueToRgb(p, q, h);
-    b = hueToRgb(p, q, h - 1 / 3);
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  if (0 <= h && h < 60) {
+    r = c; g = x; b = 0;
+  } else if (60 <= h && h < 120) {
+    r = x; g = c; b = 0;
+  } else if (120 <= h && h < 180) {
+    r = 0; g = c; b = x;
+  } else if (180 <= h && h < 240) {
+    r = 0; g = x; b = c;
+  } else if (240 <= h && h < 300) {
+    r = x; g = 0; b = c;
+  } else if (300 <= h && h < 360) {
+    r = c; g = 0; b = x;
   }
 
-  return {
-    r: Math.round(r * 255),
-    g: Math.round(g * 255),
-    b: Math.round(b * 255),
-  };
+  r = Math.round((r + m) * 255);
+  g = Math.round((g + m) * 255);
+  b = Math.round((b + m) * 255);
+
+  return { r, g, b };
 }
 
-function hueToRgb(p: number, q: number, t: number) {
-  if (t < 0) t += 1;
-  if (t > 1) t -= 1;
-  if (t < 1 / 6) return p + (q - p) * 6 * t;
-  if (t < 1 / 2) return q;
-  if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-  return p;
-}
 
 export function cmykToHsl({ c, m, y, k }: CMYKPoint): HSLPoint {
   return rgbToHsl(cmykToRgb({ c, m, y, k }));
@@ -131,12 +119,129 @@ export const getImagePixel = (
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
-    console.log("couldnt get 2d context in getImagePixel");
+    console.error("couldn't get 2d context in getImagePixel");
     return;
   }
 
   return ctx.getImageData(offsetX, offsetY, 1, 1);
 };
+
+export const adjustForColor = (
+  origin: HTMLCanvasElement,
+  canvas: HTMLCanvasElement,
+  lightnessChange: number,
+  saturationChange: number,
+) => {
+  if (canvas === null) {
+    console.error("Canvas is null");
+    return;
+  }
+  const originCtx: CanvasRenderingContext2D | null = origin.getContext("2d");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+
+  if (!ctx || !originCtx) {
+    console.error("Unable to get 2D context from canvas.");
+    return;
+  }
+
+  const imageData: ImageData = originCtx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+  const data: Uint8ClampedArray = imageData.data;
+
+  const isPixelCloseToColor = (pixel: HSLPoint) => isColorCloseToColor(pixel);
+
+  for (let i = 0; i < data.length; i += 4) {
+    change(data, i, lightnessChange, saturationChange, isPixelCloseToColor);
+  }
+  ctx.putImageData(imageData, 0, 0);
+};
+
+export const adjustForColorSelection = (
+  origin: HTMLCanvasElement,
+  canvas: HTMLCanvasElement,
+  lightnessChange: number,
+  saturationChange: number,
+  regionStart: { x: number; y: number },
+  regionEnd: { x: number; y: number }
+) => {
+  if (canvas === null || origin === null) {
+    console.error("Canvas is null");
+    return;
+  }
+
+  const originCtx: CanvasRenderingContext2D | null = origin.getContext("2d");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+
+  if (!ctx || !originCtx) {
+    console.error("Unable to get 2D context from canvas.");
+    return;
+  }
+
+  const imageData: ImageData = originCtx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+  const data: Uint8ClampedArray = imageData.data;
+
+  const isPixelCloseToColor = (pixel: HSLPoint) => isColorCloseToColor(pixel);
+
+  // Ensure that the region coordinates are within the canvas boundaries
+  const startX = Math.min(regionStart.x, regionEnd.x);
+  const startY = Math.min(regionStart.y, regionEnd.y);
+  const endX = Math.max(regionStart.x, regionEnd.x);
+  const endY = Math.max(regionStart.y, regionEnd.y);
+
+  for (let y = startY; y < endY; y++) {
+    for (let x = startX; x < endX; x++) {
+      const index = (y * canvas.width + x) * 4;
+      change(data, index, lightnessChange, saturationChange, isPixelCloseToColor);
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+}
+
+
+function change(
+  data: Uint8ClampedArray,
+  index: number,
+  lightnessChange: number,
+  saturationChange: number,
+  isPixelCloseToColor: (pixel: HSLPoint) => boolean
+) {
+  const pixel = { r: data[index], g: data[index + 1], b: data[index + 2] };
+  let hsl = rgbToHsl(pixel);
+
+  if (!isPixelCloseToColor(hsl)) {
+    return;
+  }
+
+  hsl = {
+    h: hsl.h,
+    s: Math.min(100, hsl.s + saturationChange * 100),
+    l: Math.min(100, hsl.l + lightnessChange * 100),
+  };
+
+  const rgb = hslToRgb(hsl);
+
+  data[index] = rgb.r;
+  data[index + 1] = rgb.g;
+  data[index + 2] = rgb.b;
+}
+
+function isColorCloseToColor(color1: HSLPoint) {
+  const tolerance = 20;
+
+  const hDiff = Math.abs(color1.h - 60);
+
+  return hDiff < tolerance;
+}
 
 export const setAllWhite = (
   canvas: HTMLCanvasElement,

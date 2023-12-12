@@ -16,9 +16,7 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
 
   try {
     gl.attachShader(program, vertexShader);
-    console.log("Attached vertex shader")
     gl.attachShader(program, fragmentShader);
-    console.log("Attached fragment shader")
   } catch (e) {
     throw "Didn't compile!"
   }
@@ -49,11 +47,9 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement) {
 type UniformType = "1f" | "2f" | "3f" | "1i";
 
 function setUniform(gl: WebGL2RenderingContext, program: WebGLProgram, type: UniformType, name: string, value: number | number[]) {
-  console.log("Setting uniform", name, value, program)
   const location = gl.getUniformLocation(program, name);
 
   if (type === "1f" && typeof value === "number") {
-    console.log("Setting uniform", name, value)
     gl.uniform1f(location, value);
   } else if (type === "2f" && Array.isArray(value)) {
     gl.uniform2f(location, value[0], value[1]);
