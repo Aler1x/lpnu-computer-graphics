@@ -9,6 +9,7 @@ import {
   rgbToCmyk,
   rgbToHsl,
   getImagePixel,
+  setAllWhite,
   // cmykToRgb,
   // cmykToHsl,
   // imageDataToDataUrl
@@ -95,6 +96,16 @@ const ColorsPage = () => {
 
   useEffect(() => {
     console.log("saturation changed");
+    if (hslShowSelection && hslCanvas.current) {
+      console.log("setting all to white for hsl: ");
+      console.log(hslCanvas.current, hslSelectionStart, hslSelectionEnd);
+      setAllWhite(hslCanvas.current, hslSelectionStart, hslSelectionEnd);
+    }
+    if (cmykShowSelection && cmykCanvas.current) {
+      console.log("setting all to white for cmyk: ");
+      console.log(cmykCanvas.current, cmykSelectionStart, cmykSelectionEnd);
+      setAllWhite(cmykCanvas.current, cmykSelectionStart, cmykSelectionEnd);
+    }
   }, [saturation]);
 
   useEffect(() => {

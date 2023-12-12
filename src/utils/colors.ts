@@ -138,6 +138,51 @@ export const getImagePixel = (
   return ctx.getImageData(offsetX, offsetY, 1, 1);
 };
 
+export const setAllWhite = (
+  canvas: HTMLCanvasElement,
+  regionStart: { x: number; y: number },
+  regionEnd: { x: number; y: number }
+) => {
+  if (canvas === null) {
+    console.error("Canvas is null");
+    return;
+  }
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+
+  if (!ctx) {
+    console.error("Unable to get 2D context from canvas.");
+    return;
+  }
+
+  const imageData: ImageData = ctx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+  const data: Uint8ClampedArray = imageData.data;
+
+  // Ensure that the region coordinates are within the canvas boundaries
+  const startX = Math.min(regionStart.x, regionEnd.x);
+  const startY = Math.min(regionStart.y, regionEnd.y);
+  const endX = Math.max(regionStart.x, regionEnd.x);
+  const endY = Math.max(regionStart.y, regionEnd.y);
+
+  for (let y = startY; y < endY; y++) {
+    for (let x = startX; x < endX; x++) {
+      const index = (y * canvas.width + x) * 4;
+      // Set each pixel to white (255, 255, 255, 255)
+      data[index] = 255; // Red
+      data[index + 1] = 255; // Green
+      data[index + 2] = 255; // Blue
+      data[index + 3] = 255; // Alpha
+    }
+  }
+
+  // Update the canvas with the modified image data
+  ctx.putImageData(imageData, 0, 0);
+};
+
 export const getImageData = (image: HTMLImageElement): Optional<ImageData> => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
