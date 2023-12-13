@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { findPointD, mirrorPoint } from "../../utils/parallelogram";
+import { drawLine, findPointD, mirrorPoint } from "../../utils/parallelogram";
 
 export type Point = { x: number; y: number };
 
@@ -62,6 +62,11 @@ export const ParallelogramContainer = ({
       mirroredPointD
     );
   }, [pointA, pointB, pointC, pointD, reflectionLine]);
+
+  useEffect(() => {
+    canvasRef.current &&
+      drawLine(reflectionLine.a, reflectionLine.b, canvasRef.current);
+  }, [reflectionLine]);
 
   const drawAxes = (
     ctx: CanvasRenderingContext2D,

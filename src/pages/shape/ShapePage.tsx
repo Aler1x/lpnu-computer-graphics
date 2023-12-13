@@ -9,6 +9,8 @@ const ShapePage = () => {
         pointA={{ x: 0, y: 0 }}
         pointB={{ x: 25, y: 50 }}
         pointC={{ x: 75, y: 50 }}
+        lineA={0}
+        lineB={0}
       />
     </div>
   );
