@@ -196,52 +196,83 @@ const ColorsPage = () => {
     <div className="p-8">
       <TabHeader title="Кольори та кольорові схеми 🎨" />
       <div className="flex flex-row py-5 gap-x-34">
-        <div className="flex flex-col p-1 gap-3">
-          <div className="flex flex-row gap-10">
-            <div className="flex flex-row gap-28">
-              <div>
-                <div className="flex flex-col align-center">
-                  {fileName ? "Origin image" : "No image selected"}
-                  <div ref={originSelectionParent}>
-                    <canvas
-                      ref={originCanvas}
-                      width={500}
-                      height={500}
-                      onMouseDown={(e) => handleMouseDown(e)}
-                      onMouseMove={(e) => handleMouseMove(e)}
-                      onMouseEnter={() =>
-                        setShowHoverSquare(originImage ? true : false)
-                      }
-                      onMouseLeave={() => setShowHoverSquare(false)}
-                      onMouseUp={() => handleMouseUp()}
-                      draggable={false}
-                    />
+        <div className="flex flex-col">
+          <div className="flex flex-row p-1 gap-3 h-full">
+            <div className="flex flex-row gap-10">
+              <div className="flex flex-row gap-28">
+                <div className="flex flex-col justify-start items-center h-full">
+                  <div className="flex flex-col align-center h-full">
+                    {fileName ? (
+                      <>
+                        Оригінальне зображення
+                        <div ref={originSelectionParent}>
+                          <canvas
+                            ref={originCanvas}
+                            width={500}
+                            height={500}
+                            onMouseDown={(e) => handleMouseDown(e)}
+                            onMouseMove={(e) => handleMouseMove(e)}
+                            onMouseEnter={() =>
+                              setShowHoverSquare(originImage ? true : false)
+                            }
+                            onMouseLeave={() => setShowHoverSquare(false)}
+                            onMouseUp={() => handleMouseUp()}
+                            draggable={false}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        Зображення не вибрано
+                        <div className="flex justify-center items-center text-center bg-gray-300 h-full p-4 rounded-lg">
+                          Завантажте картинку, клацнувши на відповідну кнопку
+                        </div>
+                      </>
+                    )}
                   </div>
+                  <div id="cmykselection" style={getSelectionStyle()}></div>
                 </div>
-                <div id="cmykselection" style={getSelectionStyle()}></div>
-              </div>
-              <div>
-                <div className="flex flex-col align-center">
-                  {fileName ? "Edited image" : "No image selected"}
-                  <div>
-                    <canvas
-                      ref={editingCanvas}
-                      width={500}
-                      height={500}
-                      onMouseMove={(e) => handleMouseMove(e)}
-                      onMouseEnter={() =>
-                        setShowHoverSquare(originImage ? true : false)
-                      }
-                      onMouseLeave={() => setShowHoverSquare(false)}
-                      draggable={false}
-                    />
+                <div className="flex flex-col justify-start items-center h-full">
+                  <div className="flex flex-col align-center h-full">
+                    {fileName ? (
+                      <>
+                        Відредаговане зображення
+                        <div>
+                          <canvas
+                            ref={editingCanvas}
+                            width={500}
+                            height={500}
+                            onMouseMove={(e) => handleMouseMove(e)}
+                            onMouseEnter={() =>
+                              setShowHoverSquare(originImage ? true : false)
+                            }
+                            onMouseLeave={() => setShowHoverSquare(false)}
+                            draggable={false}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        Зображення не вибрано
+                        <div className="flex justify-center items-center text-center bg-gray-300 h-full p-4 rounded-lg">
+                          Завантажте картинку, клацнувши на відповідну кнопку
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          {!imageSrc && (
+            <div className="flex w-full justify-center items-center">
+              <p className="text-center m-4">
+                Оберіть зображення, щоб змінювати кольори.
+              </p>
+            </div>
+          )}
           <div className="flex flex-row gap-5 text-2xl items-center">
-            {imageSrc ? (
+            {imageSrc && (
               <>
                 <ControlCard>
                   <div className="p-4">{hoveredColorHSL}</div>
@@ -253,10 +284,6 @@ const ColorsPage = () => {
                   <div className="px-4 py-2">{hoveredColorCMYK}</div>
                 </ControlCard>
               </>
-            ) : (
-              <div className="flex w-full justify-center items-center">
-                <p className="text-center">Select image to manipulate colors</p>
-              </div>
             )}
           </div>
         </div>
