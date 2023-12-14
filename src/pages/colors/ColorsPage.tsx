@@ -45,7 +45,6 @@ const ColorsPage = () => {
   const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
   const [isSelecting, setIsSelecting] = useState(false);
   const [showSelection, setShowSelection] = useState(false);
-  const [showStartToast, setShowStartToast] = useState(false);
   const [achivementToast, setAchivementToast] = useState(false);
 
   const hoveredColorRGB = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
@@ -76,13 +75,6 @@ const ColorsPage = () => {
     };
     image.src = imagePath;
   };
-
-  useEffect(() => {
-    if (showStartToast === false) {
-      toast.info("Виберіть область, яку бажаєте змінити");
-      setShowStartToast(true);
-    }
-  }, [showStartToast]);
 
   useEffect(() => {
     if (
@@ -157,6 +149,7 @@ const ColorsPage = () => {
         setOriginImage(result);
         setEditingImage(result);
         setShowSelection(false);
+        toast.info("Виберіть область, яку бажаєте змінити");
       };
       reader.readAsDataURL(file);
     }

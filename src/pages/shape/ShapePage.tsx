@@ -15,10 +15,12 @@ const ShapePage = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Initialize the Shape with the parallelogram vertices
-  const myShape = new Shape(parallelogram);
+  let myShape = new Shape(parallelogram);
 
   const onButtonClick = () => {
     drawShape();
+    setParallelogram(myShape.verticesMatrix);
+    myShape.applyTransformation(myShape.getTranslateMatrix(10, 10));
     setParallelogram(myShape.verticesMatrix);
   }
 
@@ -43,7 +45,10 @@ const ShapePage = () => {
     const B = parallelogram[1];
     const C = parallelogram[2];
     const D = calculateFourthPoint(parallelogram);
+    console.log(A, B, C, D);
     setParallelogram([A, B, C, D]);
+    myShape = new Shape(parallelogram);
+    console.log(parallelogram);
     if (isOnTheSameLine(parallelogram)) {
       toast.error("Це не паралелограм");
       return

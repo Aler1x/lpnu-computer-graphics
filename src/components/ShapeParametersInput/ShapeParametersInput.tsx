@@ -12,10 +12,7 @@ interface ShapeParametersInputProps {
 const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps) => {
 
   const onParallelogramClick = () => {
-    if (localStorage.getItem("parallelogram") === "false" || localStorage.getItem("parallelogram") === null) {
-      toast.success("Вітаю ви знайшли таємну кнопку");
-      localStorage.setItem("parallelogram", "true");
-    }
+    toast.success("Вітаю ви знайшли таємну кнопку");
   }
 
   return (
