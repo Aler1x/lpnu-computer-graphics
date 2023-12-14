@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import "./ParallelogramContainer.css";
 
 interface ParallelogramContainerProps {
   parallelogram: number[][];
@@ -46,7 +47,7 @@ export const ParallelogramContainer = ({
     context.stroke();
   }
 
-  const drawParallelogram = (context: CanvasRenderingContext2D) => {
+  const drawParallelogram = useCallback((context: CanvasRenderingContext2D) => {
     context.beginPath();
     context.strokeStyle = "red";
     context.lineWidth = 1;
@@ -56,7 +57,7 @@ export const ParallelogramContainer = ({
     context.lineTo(parallelogram[3][0] + canvasWidth / 2, -parallelogram[3][1] + canvasHeight / 2);
     context.lineTo(parallelogram[0][0] + canvasWidth / 2, -parallelogram[0][0] + canvasHeight / 2);
     context.stroke();
-  }
+  }, [parallelogram]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -71,8 +72,21 @@ export const ParallelogramContainer = ({
     }
   }, []);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const context = canvas.getContext("2d");
+      if (context) {
+        clearCanvas(context);
+        drawGrid(context);
+        drawCoordinateSystem(context);
+        drawParallelogram(context);
+      }
+    }
+  }, [drawParallelogram, parallelogram]);
+
   return (
-    <div className="flex justify-center items-center bg-gray-300 rounded-lg">
+    <div className="flex justify-center items-center bg-gray-300 rounded-lg canvas-container">
       <canvas
         ref={canvasRef}
         width={canvasWidth}

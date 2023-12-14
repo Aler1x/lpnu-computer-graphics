@@ -23,7 +23,7 @@ export const App = () => {
         <Route path="/shapes" element={<ShapePage/>} />
       </Routes>
     </Router>
-    <ToastContainer autoClose={3000} draggable={false} limit={2} theme="colored"  />
+    <ToastContainer autoClose={5000} draggable={false} limit={2}  />
   </>
   );
 };

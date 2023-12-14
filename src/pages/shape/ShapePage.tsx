@@ -5,7 +5,6 @@ import TabHeader from "../../components/TabHeader/TabHeader";
 import { Geometry } from "../../icons/Geometry";
 import "./ShapePage.css";
 
-// TODO fix ShapeParametersInput
 // TODO fix ParallelogramContainer
 
 const ShapePage = () => {
@@ -15,6 +14,21 @@ const ShapePage = () => {
   const onButtonClick = () => {
     console.log(parallelogram);
     console.log(line);
+  }
+
+  function findFourthPoint(A: number[], B: number[], C: number[]) {
+    return [
+      B[0] + C[0] - A[0],
+      B[1] + C[1] - A[1]
+    ];
+}
+
+  const onDrawButtonClick = () => {
+    const A = parallelogram[0];
+    const B = parallelogram[1];
+    const C = parallelogram[2];
+    const D = findFourthPoint(A, B, C);
+    setParallelogram([A, B, C, D]);
   }
 
   return (
@@ -30,9 +44,13 @@ const ShapePage = () => {
           parallelogram={parallelogram}
           line={line}
          />
+         <button className="button" onClick={onDrawButtonClick}>
+          <Geometry />
+          Намалювати паралелограм
+        </button>
         <button className="button" onClick={onButtonClick}>
           <Geometry />
-          Почати
+          Почати рух
         </button>
         </div>
       </div>
