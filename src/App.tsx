@@ -4,19 +4,16 @@ import FractalPage from "./pages/fractals/FractalPage";
 import ColorsPage from "./pages/colors/ColorsPage";
 import ShapePage from './pages/shape/ShapePage';
 import { Sidebar } from './components/Sidebar/Sidebar';
-import { useState } from 'react';
 import "./App.css";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 export const App = () => {
-  const [showHelp, setShowHelp] = useState(false);
-
   return (
     <>
       <Router>
-        <Sidebar showHelp={showHelp} setShowHelp={setShowHelp} />
+        <Sidebar />
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/fractals" element={<FractalPage />} />
@@ -25,7 +22,7 @@ export const App = () => {
         </Routes>
       </Router>
       <ToastContainer
-        autoClose={5000}
+        autoClose={2000}
         draggable={false}
         limit={2}
       />

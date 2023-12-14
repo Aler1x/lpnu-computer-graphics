@@ -3,7 +3,6 @@ import { Line } from "../../icons/Line";
 import { toast } from "react-toastify";
 import "./ShapeParametersInput.css";
 
-// TODO add validation
 interface ShapeParametersInputProps {
   parallelogram: number[][];
   line: number[];

@@ -45,7 +45,6 @@ const ColorsPage = () => {
   const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
   const [isSelecting, setIsSelecting] = useState(false);
   const [showSelection, setShowSelection] = useState(false);
-  const [achivementToast, setAchivementToast] = useState(false);
 
   const hoveredColorRGB = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
   const hoveredColorHSL = `hsl(${hslValues.h}, ${hslValues.s}%, ${hslValues.l}%)`;
@@ -78,14 +77,14 @@ const ColorsPage = () => {
 
   useEffect(() => {
     if (
-      localStorage.getItem("colors") === "false" &&
+      localStorage.getItem("colors") === "false" ||
       localStorage.getItem("colors") === null &&
-      achivementToast === false
+      cmykValues.k === 1
     ) {
       toast.success("Ви знайшли знайшли істинно чорний колір");
-      setAchivementToast(true);
+      localStorage.setItem("colors", "true");
     }
-  }, [achivementToast]);
+  }, [cmykValues.k]);
 
 
   useEffect(() => {

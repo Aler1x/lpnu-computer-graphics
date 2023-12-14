@@ -7,11 +7,11 @@ import "./ShapePage.css";
 import { Matrix, Shape } from "../../utils/shape";
 import { toast } from "react-toastify";
 
-// TODO fix ParallelogramContainer
+// TODO: add toasts
 
 const ShapePage = () => {
   const [parallelogram, setParallelogram] = useState<Matrix>([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]])
-  const [line, setLine] = useState<number[]>([0, 0]);
+  const line : number[] = [0, 0];
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Initialize the Shape with the parallelogram vertices

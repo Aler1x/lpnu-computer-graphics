@@ -4,12 +4,7 @@ import { SidebarSeparator } from "../../icons/SidebarSeparator";
 import { useNavigate } from 'react-router-dom';
 import "./Sidebar.css";
 
-interface SidebarProps {
-  showHelp: boolean;
-  setShowHelp: (showHelp: boolean) => void;
-}
-
-export const Sidebar = ({ showHelp, setShowHelp }: SidebarProps) => {
+export const Sidebar = () => {
   const pages = ["Main", "Fractals", "Colors", "Shapes"];
   
   // Initialize 'active' state based on localStorage value
