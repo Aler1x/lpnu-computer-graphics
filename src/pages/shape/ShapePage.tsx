@@ -1,17 +1,24 @@
 import { ParallelogramContainer } from "../../components/ParallelogramContainer/ParallelogramContainer";
+import ShapeParametersInput from "../../components/ShapeParametersInput/ShapeParametersInput";
 import TabHeader from "../../components/TabHeader/TabHeader";
+import { Geometry } from "../../icons/Geometry";
+import "./ShapePage.css";
 
 const ShapePage = () => {
   return (
     <div className="p-8">
       <TabHeader title="Взаємодія з паралелограмом 🔷" />
-      <ParallelogramContainer
-        pointA={{ x: 0, y: 0 }}
-        pointB={{ x: 25, y: 50 }}
-        pointC={{ x: 75, y: 50 }}
-        lineA={0}
-        lineB={0}
-      />
+      <div className="flex flex-row gap-28">
+        <ParallelogramContainer
+        />
+        <div className="flex flex-col gap-4">
+        <ShapeParametersInput />
+        <button className="button">
+          <Geometry />
+          Почати
+        </button>
+        </div>
+      </div>
     </div>
   );
 };

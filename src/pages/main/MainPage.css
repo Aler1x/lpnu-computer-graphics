@@ -1,0 +1,13 @@
+.place {
+  background-color: #2C3639;
+  border-radius: 12px;
+}
+
+.fox {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 400px;
+  aspect-ratio: 1/1;
+}
+

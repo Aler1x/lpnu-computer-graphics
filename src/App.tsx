@@ -6,6 +6,7 @@ import ShapePage from './pages/shape/ShapePage';
 import { Sidebar } from './components/Sidebar/Sidebar';
 import { useState } from 'react';
 import "./App.css";
+import { ToastContainer } from 'react-toastify';
 
 
 export const App = () => {
@@ -22,6 +23,7 @@ export const App = () => {
         <Route path="/shapes" element={<ShapePage/>} />
       </Routes>
     </Router>
+    <ToastContainer autoClose={3000} draggable={false} limit={2} theme="colored"  />
   </>
   );
 };

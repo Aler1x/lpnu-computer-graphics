@@ -1,144 +1,89 @@
-import React, { useEffect, useRef, useState } from "react";
-import { drawLine, findPointD, mirrorPoint } from "../../utils/parallelogram";
-
-export type Point = { x: number; y: number };
-
-export type Line = {
-  a: number; // Coefficient 'a' of the line equation (y = ax + b)
-  b: number; // Coefficient 'b' of the line equation (y = ax + b)
-};
+import { useEffect, useRef } from "react";
+import type { Point } from "../../utils/shape";
 
 interface ParallelogramContainerProps {
-  pointA: Point;
-  pointB: Point;
-  pointC: Point;
-  lineA: number;
-  lineB: number;
+  points: Point[]
 }
 
+// TODO: use shape.ts
+// TODO: add drawParallelogram
+
 export const ParallelogramContainer = ({
-  pointA,
-  pointB,
-  pointC,
-  lineA,
-  lineB,
+  points = [
+    { x: 0, y: 100 },
+    { x: 200, y: 100 },
+    { x: 300, y: 200 },
+    { x: 100, y: 200 },
+  ],
 }: ParallelogramContainerProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasWidth = 800;
-  const canvasHeight = 500;
-  const [reflectionLine, setReflectionLine] = useState({ a: lineA, b: lineB });
-  const pointD = findPointD(pointA, pointB, pointC);
+  const canvasWidth = 1100;
+  const canvasHeight = 600;
+
+
+
+  const drawGrid = (context: CanvasRenderingContext2D) => {
+    context.beginPath();
+    context.strokeStyle = "black";
+    context.lineWidth = 0.125;
+    for (let i = 0; i < canvasWidth; i += 10) {
+      context.moveTo(i, 0);
+      context.lineTo(i, canvasHeight);
+    }
+    for (let i = 0; i < canvasHeight; i += 10) {
+      context.moveTo(0, i);
+      context.lineTo(canvasWidth, i);
+    }
+    context.stroke();
+  };
+
+  const clearCanvas = (context: CanvasRenderingContext2D) => {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+  }
+
+  const drawCoordinateSystem = (context: CanvasRenderingContext2D) => {
+    context.beginPath();
+    context.strokeStyle = "black";
+    context.lineWidth = 1;
+    context.moveTo(0, canvasHeight / 2);
+    context.lineTo(canvasWidth, canvasHeight / 2);
+    context.moveTo(canvasWidth / 2, 0);
+    context.lineTo(canvasWidth / 2, canvasHeight);
+    context.stroke();
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    drawAxes(ctx, canvas.width, canvas.height);
+    if (canvas) {
+      const context = canvas.getContext("2d");
+      if (context) {
+        clearCanvas(context);
+        drawGrid(context);
+        drawCoordinateSystem(context);
+        drawParallelogram(context);
+      }
+    }
   }, []);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawAxes(ctx, canvas.width, canvas.height);
-
-    const mirroredPointA = mirrorPoint(pointA, reflectionLine);
-    const mirroredPointB = mirrorPoint(pointB, reflectionLine);
-    const mirroredPointC = mirrorPoint(pointC, reflectionLine);
-    const mirroredPointD = mirrorPoint(pointD, reflectionLine);
-
-    drawParallelogram(
-      ctx,
-      mirroredPointA,
-      mirroredPointB,
-      mirroredPointC,
-      mirroredPointD
-    );
-  }, [pointA, pointB, pointC, pointD, reflectionLine]);
-
-  useEffect(() => {
-    canvasRef.current &&
-      drawLine(reflectionLine.a, reflectionLine.b, canvasRef.current);
-  }, [reflectionLine]);
-
-  const drawAxes = (
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number
-  ) => {
-    // Clear the canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // Draw X axis
-    ctx.beginPath();
-    ctx.moveTo(width / 2, 0);
-    ctx.lineTo(width / 2, height);
-    ctx.stroke();
-
-    // Draw Y axis
-    ctx.beginPath();
-    ctx.moveTo(0, height / 2);
-    ctx.lineTo(width, height / 2);
-    ctx.stroke();
-  };
-
-  const drawParallelogram = (
-    ctx: CanvasRenderingContext2D,
-    pointA: Point,
-    pointB: Point,
-    pointC: Point,
-    pointD: Point
-  ) => {
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
-
-    // Draw lines connecting the points
-    ctx.beginPath();
-    ctx.moveTo(centerX + pointA.x, centerY - pointA.y);
-    ctx.lineTo(centerX + pointB.x, centerY - pointB.y);
-    ctx.lineTo(centerX + pointC.x, centerY - pointC.y);
-    ctx.lineTo(centerX + pointD.x, centerY - pointD.y);
-    ctx.closePath();
-    ctx.stroke();
-  };
-
-  const handleLineInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setReflectionLine((prevLine) => ({
-      ...prevLine,
-      [name]: parseFloat(value) || 0,
-    }));
-  };
+  const drawParallelogram = (context: CanvasRenderingContext2D) => {
+    context.beginPath();
+    context.strokeStyle = "red";
+    context.lineWidth = 1;
+    context.moveTo(points[0].x + canvasWidth / 2, -points[0].y + canvasHeight / 2);
+    context.lineTo(points[1].x + canvasWidth / 2, -points[1].y + canvasHeight / 2);
+    context.lineTo(points[2].x + canvasWidth / 2, -points[2].y + canvasHeight / 2);
+    context.lineTo(points[3].x + canvasWidth / 2, -points[3].y + canvasHeight / 2);
+    context.lineTo(points[0].x + canvasWidth / 2, -points[0].y + canvasHeight / 2);
+    context.stroke();
+  }
 
   return (
     <div className="flex justify-center items-center bg-gray-300 rounded-lg">
-      <div className="mb-4">
-        <label className="mr-2">Enter line coefficients:</label>
-        <input
-          type="text"
-          name="a"
-          placeholder="a"
-          onChange={handleLineInput}
-        />
-        <input
-          type="text"
-          name="b"
-          placeholder="b"
-          onChange={handleLineInput}
-        />
-      </div>
       <canvas
         ref={canvasRef}
         width={canvasWidth}
         height={canvasHeight}
-      ></canvas>
+      />
     </div>
   );
 };
