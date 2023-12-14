@@ -2,9 +2,13 @@ import { Parallelogram } from "../../icons/Paralelogram"
 import { Line } from "../../icons/Line";
 import "./ShapeParametersInput.css";
 
-const ShapeParametersInput = () => {
-  const parallelogram: number[][] = [[0, 0], [0, 0], [0, 0]] as number[][];
-  const line: number[] = [0, 0] as number[];
+// TODO this not working
+interface ShapeParametersInputProps {
+  parallelogram: number[][];
+  line: number[];
+}
+
+const ShapeParametersInput = ({ parallelogram, line} : ShapeParametersInputProps) => {
 
   return (
     <div className="flex flex-col color">
