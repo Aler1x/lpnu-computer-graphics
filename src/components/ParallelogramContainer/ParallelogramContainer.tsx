@@ -1,21 +1,19 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import "./ParallelogramContainer.css";
 
 interface ParallelogramContainerProps {
   parallelogram: number[][];
   line: number[];
+  canvasRef: React.RefObject<HTMLCanvasElement>;
 }
-
-// TODO: use shape.ts
-// TODO: add drawParallelogram which receives array of points
 
 export const ParallelogramContainer = ({
   parallelogram,
-  line
+  line,
+  canvasRef
 }: ParallelogramContainerProps) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasWidth = 1100;
-  const canvasHeight = 600;
+  const canvasWidth = 700;
+  const canvasHeight = 700;
 
   const drawGrid = (context: CanvasRenderingContext2D) => {
     context.beginPath();
@@ -59,18 +57,33 @@ export const ParallelogramContainer = ({
     context.stroke();
   }, [parallelogram]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const context = canvas.getContext("2d");
-      if (context) {
-        clearCanvas(context);
-        drawGrid(context);
-        drawCoordinateSystem(context);
-        drawParallelogram(context);
-      }
+  const drawLine = useCallback((canvas: HTMLCanvasElement) => {
+    const context = canvas.getContext("2d");
+    const center = { x: canvas.width / 2, y: canvas.height / 2 };
+    if (!context) {
+      console.error("couldn't load canvas for drawLine");
+      return;
     }
-  }, []);
+
+    context.strokeStyle = "blue";
+    context.lineWidth = 1;
+
+    // Calculate the coordinates for the line
+    const xStart = -center.x; // Adjust for the center of the canvas
+    const xEnd = center.x;
+
+    // Calculate y-coordinates using the equation y = ax + b
+    const yStart = line[0] * xStart + line[1];
+    const yEnd = line[0] * xEnd + line[1];
+
+    // Draw the line
+    context.beginPath();
+    const startPoint = { x: center.x + xStart, y: center.y - yStart }; // Adjust for the center of the canvas
+    const endPoint = { x: center.x + xEnd, y: center.y - yEnd };
+    context.moveTo(startPoint.x, startPoint.y);
+    context.lineTo(endPoint.x, endPoint.y);
+    context.stroke();
+  }, [line]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -80,10 +93,11 @@ export const ParallelogramContainer = ({
         clearCanvas(context);
         drawGrid(context);
         drawCoordinateSystem(context);
+        if (line[0] !== 0 && line[1] !== 0) drawLine(canvas);
         drawParallelogram(context);
       }
     }
-  }, [drawParallelogram, parallelogram]);
+  }, [drawParallelogram, parallelogram, line, drawLine, canvasRef]);
 
   return (
     <div className="flex justify-center items-center bg-gray-300 rounded-lg canvas-container">

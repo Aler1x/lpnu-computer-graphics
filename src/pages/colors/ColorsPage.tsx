@@ -14,6 +14,7 @@ import ControlCard from "../../components/ControlCard/ControlCard";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import { UploadImage } from "../../icons/UploadImage";
 import "./ColorsPage.css";
+import { toast } from "react-toastify";
 
 const ColorsPage = () => {
   const originSelectionParent = useRef<HTMLDivElement>(null);
@@ -44,6 +45,8 @@ const ColorsPage = () => {
   const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
   const [isSelecting, setIsSelecting] = useState(false);
   const [showSelection, setShowSelection] = useState(false);
+  const [showStartToast, setShowStartToast] = useState(false);
+  const [achivementToast, setAchivementToast] = useState(false);
 
   const hoveredColorRGB = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
   const hoveredColorHSL = `hsl(${hslValues.h}, ${hslValues.s}%, ${hslValues.l}%)`;
@@ -73,6 +76,25 @@ const ColorsPage = () => {
     };
     image.src = imagePath;
   };
+
+  useEffect(() => {
+    if (showStartToast === false) {
+      toast.info("Виберіть область, яку бажаєте змінити");
+      setShowStartToast(true);
+    }
+  }, [showStartToast]);
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("colors") === "false" &&
+      localStorage.getItem("colors") === null &&
+      achivementToast === false
+    ) {
+      toast.success("Ви знайшли знайшли істинно чорний колір");
+      setAchivementToast(true);
+    }
+  }, [achivementToast]);
+
 
   useEffect(() => {
     if (showSelection && editingCanvas.current && originCanvas.current) {

@@ -17,23 +17,24 @@ const FractalPage = () => {
   const [currentFractalName, setCurrentFractalName] = useState("Фрактал Ньютона");
   const [steps, setSteps] = useState(10);
   const [max, setMax] = useState(10);
+  const [showToast, setShowToast] = useState(false);
 
 
   useEffect(() => {
     setCurrentFractalName(currentFractalIndex === 0 ? "Фрактал Ньютона" : "Фрактал Вічека");
-
-    if (currentFractalIndex === 1) {
+    
+    if (currentFractalIndex === 1 && showToast === false) {
       toast.info("Фрактал Вічека є дуже великим, тому ми змінили кількість ітерацій на 5, щоб він відобразився на екрані");
-      if (localStorage.getItem("vicsek") === "false" || localStorage.getItem("vicsek") === null) {
+      if (localStorage.getItem("vicsek") === "true" || localStorage.getItem("vicsek") === null) {
         toast.success("Вітаю ви створили фрактал Вічека");
         localStorage.setItem("vicsek", "true");
       }
+      setShowToast(true);
     }
-
     setSteps(currentFractalIndex === 0 ? 20 : 10);
     setMax(currentFractalIndex === 0 ? 100 : 10);
     setIterations(currentFractalIndex === 0 ? 50 : 5);
-  }, [currentFractalIndex]);
+  }, [currentFractalIndex, showToast]);
 
   return (
     <div className="p-8">

@@ -95,12 +95,10 @@ export class Shape {
         return matrix;
     }
 
-    mirrorAcrossLine(a: number, b: number): void {
+    mirrorAcrossLine([a,b]: number[]): void {
         const mirrorMatrix = this.getMirrorMatrix(a, b);
         this.applyTransformation(mirrorMatrix);
     }
-
-    // ... other methods ...
 }
 
 function matrixMultiply(a: Matrix, b: Matrix): Matrix {
