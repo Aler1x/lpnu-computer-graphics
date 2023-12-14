@@ -49,9 +49,9 @@ export const Sidebar = ({ showHelp, setShowHelp }: SidebarProps) => {
         <ul className="flex flex-col justify-center items-center space-y-2 font-medium gap-5">
           {drawSidebar()}
         </ul>
-        <ul className="flex flex-col justify-center items-center space-y-2 font-medium gap-5">
+        {/* <ul className="flex flex-col justify-center items-center space-y-2 font-medium gap-5">
           <SidebarElement icon={4} onClick={() => { setShowHelp(!showHelp) }} />
-        </ul>
+        </ul> */}
       </div>
     </aside>
   );
