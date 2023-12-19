@@ -23,9 +23,7 @@ const ShapePage = () => {
   let myShape = new Shape(parallelogram);
 
   const onButtonClick = () => {
-    drawShape();
-    setParallelogram(myShape.verticesMatrix);
-    myShape.applyTransformation(myShape.getTranslateMatrix(10, 10));
+    myShape.mirrorAcrossLineAndTransform(line, 10, 10);
     setParallelogram(myShape.verticesMatrix);
   };
 
@@ -39,11 +37,6 @@ const ShapePage = () => {
       1,
     ];
     return D;
-  }
-
-  // Function to draw the Shape on the canvas
-  function drawShape() {
-    myShape.mirrorAcrossLine(line);
   }
 
   const onDrawButtonClick = () => {

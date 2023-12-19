@@ -67,7 +67,7 @@ export const ParallelogramContainer = ({
       );
       context.lineTo(
         parallelogram[0][0] + canvasWidth / 2,
-        -parallelogram[0][0] + canvasHeight / 2
+        -parallelogram[0][1] + canvasHeight / 2
       );
       context.stroke();
     },
@@ -76,7 +76,6 @@ export const ParallelogramContainer = ({
 
   const drawLine = useCallback(
     (canvas: HTMLCanvasElement) => {
-      console.log("drawline callback called");
       const context = canvas.getContext("2d");
       const center = { x: canvas.width / 2, y: canvas.height / 2 };
       if (!context) {
@@ -101,7 +100,6 @@ export const ParallelogramContainer = ({
       context.moveTo(startPoint.x, startPoint.y);
       context.lineTo(endPoint.x, endPoint.y);
       context.stroke();
-      console.log("startPoint:", startPoint, "endPoint:", endPoint);
     },
     [line]
   );
@@ -114,9 +112,7 @@ export const ParallelogramContainer = ({
         clearCanvas(context);
         drawGrid(context);
         drawCoordinateSystem(context);
-        drawLine(canvas);
         drawParallelogram(context);
-        console.log(parallelogram);
       }
     }
   }, [drawParallelogram, parallelogram, line, drawLine, canvasRef]);
