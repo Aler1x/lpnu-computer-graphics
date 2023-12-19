@@ -116,6 +116,7 @@ export const ParallelogramContainer = ({
         drawCoordinateSystem(context);
         drawLine(canvas);
         drawParallelogram(context);
+        console.log(parallelogram);
       }
     }
   }, [drawParallelogram, parallelogram, line, drawLine, canvasRef]);
