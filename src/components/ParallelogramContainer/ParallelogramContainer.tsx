@@ -74,29 +74,17 @@ export const ParallelogramContainer = ({
     [parallelogram]
   );
 
-<<<<<<< Updated upstream
-  const drawLine = useCallback((canvas: HTMLCanvasElement) => {
-    const context = canvas.getContext("2d");
-    const center = { x: canvas.width / 2, y: canvas.height / 2 };
-    if (!context) {
-      console.error("couldn't load canvas for drawLine");
-      return;
-    }
-    context.strokeStyle = "blue";
-    context.lineWidth = 1;
-=======
   const drawLine = useCallback(
     (canvas: HTMLCanvasElement) => {
+      console.log("drawline callback called");
       const context = canvas.getContext("2d");
       const center = { x: canvas.width / 2, y: canvas.height / 2 };
       if (!context) {
         console.error("couldn't load canvas for drawLine");
         return;
       }
-
       context.strokeStyle = "blue";
       context.lineWidth = 1;
->>>>>>> Stashed changes
 
       // Calculate the coordinates for the line
       const xStart = -center.x; // Adjust for the center of the canvas
@@ -113,6 +101,7 @@ export const ParallelogramContainer = ({
       context.moveTo(startPoint.x, startPoint.y);
       context.lineTo(endPoint.x, endPoint.y);
       context.stroke();
+      console.log("startPoint:", startPoint, "endPoint:", endPoint);
     },
     [line]
   );
@@ -125,26 +114,15 @@ export const ParallelogramContainer = ({
         clearCanvas(context);
         drawGrid(context);
         drawCoordinateSystem(context);
-        if (line[0] !== 0 && line[1] !== 0) { 
-          drawLine(canvas);
-        }
+        drawLine(canvas);
         drawParallelogram(context);
       }
     }
   }, [drawParallelogram, parallelogram, line, drawLine, canvasRef]);
 
   return (
-<<<<<<< Updated upstream
     <div className="flex justify-center items-center bg-gray-300 rounded-lg max-w-[700px] max-h-[700px]">
-      <canvas
-        ref={canvasRef}
-        width={canvasWidth}
-        height={canvasHeight}
-      />
-=======
-    <div className="flex justify-center items-center bg-gray-300 rounded-lg canvas-container">
       <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
->>>>>>> Stashed changes
     </div>
   );
 };

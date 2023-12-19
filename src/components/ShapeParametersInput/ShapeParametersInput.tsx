@@ -1,4 +1,4 @@
-import { Parallelogram } from "../../icons/Paralelogram"
+import { Parallelogram } from "../../icons/Paralelogram";
 import { Line } from "../../icons/Line";
 import { toast } from "react-toastify";
 import "./ShapeParametersInput.css";
@@ -8,11 +8,13 @@ interface ShapeParametersInputProps {
   line: number[];
 }
 
-const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps) => {
-
+const ShapeParametersInput = ({
+  parallelogram,
+  line,
+}: ShapeParametersInputProps) => {
   const onParallelogramClick = () => {
     toast.success("Вітаю ви знайшли таємну кнопку");
-  }
+  };
 
   return (
     <div className="flex flex-col color">
@@ -28,14 +30,18 @@ const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps
               <input
                 type="text"
                 placeholder="0"
-                onChange={(e) => { parallelogram[0][0] = Number(e.target.value) }}
+                onChange={(e) => {
+                  parallelogram[0][0] = Number(e.target.value);
+                }}
                 className="w-24 input p-1"
               />
               <label>Y</label>
               <input
                 type="text"
                 placeholder="0"
-                onChange={(e) => { parallelogram[0][1] = Number(e.target.value) }}
+                onChange={(e) => {
+                  parallelogram[0][1] = Number(e.target.value);
+                }}
                 className="w-24 input p-1"
               />
             </div>
@@ -47,14 +53,18 @@ const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps
               <input
                 type="text"
                 placeholder="0"
-                onChange={(e) => { parallelogram[1][0] = Number(e.target.value) }}
+                onChange={(e) => {
+                  parallelogram[1][0] = Number(e.target.value);
+                }}
                 className="w-24 input p-1"
               />
               <label>Y</label>
               <input
                 type="text"
                 placeholder="0"
-                onChange={(e) => { parallelogram[1][1] = Number(e.target.value) }}
+                onChange={(e) => {
+                  parallelogram[1][1] = Number(e.target.value);
+                }}
                 className="w-24 input p-1"
               />
             </div>
@@ -66,14 +76,18 @@ const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps
               <input
                 type="text"
                 placeholder="0"
-                onChange={(e) => { parallelogram[2][0] = Number(e.target.value) }}
+                onChange={(e) => {
+                  parallelogram[2][0] = Number(e.target.value);
+                }}
                 className="w-24 input p-1"
               />
               <label>Y</label>
               <input
                 type="text"
                 placeholder="0"
-                onChange={(e) => { parallelogram[2][1] = Number(e.target.value) }}
+                onChange={(e) => {
+                  parallelogram[2][1] = Number(e.target.value);
+                }}
                 className="w-24 input p-1"
               />
             </div>
@@ -87,7 +101,9 @@ const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps
           <input
             type="text"
             placeholder="0"
-            onChange={(e) => { line[0] = Number(e.target.value) }}
+            onChange={(e) => {
+              line[0] = Number(e.target.value);
+            }}
             className="w-24 input p-1"
           />
         </div>
@@ -96,13 +112,15 @@ const ShapeParametersInput = ({ parallelogram, line }: ShapeParametersInputProps
           <input
             type="text"
             placeholder="0"
-            onChange={(e) => { line[1] = Number(e.target.value) }}
+            onChange={(e) => {
+              line[1] = Number(e.target.value);
+            }}
             className="w-24 input p-1"
           />
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ShapeParametersInput;
