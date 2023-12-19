@@ -23,7 +23,7 @@ const ShapePage = () => {
   let myShape = new Shape(parallelogram);
 
   const onButtonClick = () => {
-    myShape.mirrorAcrossLineAndTransform(line, 10, 10);
+    myShape.mirrorAcrossLineAndTransform(line, 10);
     setParallelogram(myShape.verticesMatrix);
   };
 

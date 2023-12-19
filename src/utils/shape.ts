@@ -81,31 +81,32 @@ export class Shape {
     const translateToOrigin = this.getTranslateMatrix(0, -b);
 
     // Rotation to align with x-axis
-    const rotateToXAxis = this.getRotateMatrix(-angle);
+    const rotateToXAxis = this.getRotateMatrix(-angle * (180 / Math.PI));
 
     // Reflection across x-axis
     const reflectAcrossX = this.getScaleMatrix(1, -1);
 
     // Reverse rotation
-    const reverseRotate = this.getRotateMatrix(angle);
+    const reverseRotate = this.getRotateMatrix(angle * (180 / Math.PI));
 
     // Reverse translation
     const reverseTranslate = this.getTranslateMatrix(0, b);
 
     // Combine transformations
-    let matrix = matrixMultiply(translateToOrigin, reverseTranslate);
-    matrix = matrixMultiply(matrix, reverseRotate);
+    let matrix = matrixMultiply(translateToOrigin, rotateToXAxis);
     matrix = matrixMultiply(matrix, reflectAcrossX);
-    matrix = matrixMultiply(matrix, rotateToXAxis);
+    matrix = matrixMultiply(matrix, reverseRotate);
+    matrix = matrixMultiply(matrix, reverseTranslate);
 
     return matrix;
   }
 
-  mirrorAcrossLineAndTransform([a, b]: number[], x: number, y: number): void {
+  mirrorAcrossLineAndTransform([a, b]: number[], x: number): void {
     const mirrorMatrix = this.getMirrorMatrix(a, b);
-    const translateMatrix = this.getTranslateMatrix(x, y);
     this.applyTransformation(mirrorMatrix);
     console.log(this.verticesMatrix);
+    console.log("x:", x, "y:", a * x + b);
+    const translateMatrix = this.getTranslateMatrix(x, a * x + b);
     this.applyTransformation(translateMatrix);
     console.log(this.verticesMatrix);
   }
