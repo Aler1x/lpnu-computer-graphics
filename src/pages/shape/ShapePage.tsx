@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 const ShapePage = () => {
   const [parallelogram, setParallelogram] = useState<Matrix>([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]])
-  const line : number[] = [0, 0];
+  const [line, setLine] = useState<number[]>([0, 0, 0, 0]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Initialize the Shape with the parallelogram vertices
@@ -45,7 +45,6 @@ const ShapePage = () => {
     const B = parallelogram[1];
     const C = parallelogram[2];
     const D = calculateFourthPoint(parallelogram);
-    console.log(A, B, C, D);
     setParallelogram([A, B, C, D]);
     myShape = new Shape(parallelogram);
     console.log(parallelogram);

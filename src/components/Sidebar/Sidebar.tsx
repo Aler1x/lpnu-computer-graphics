@@ -1,24 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SidebarElement } from "./SidebarElement/SidebarElement";
 import { SidebarSeparator } from "../../icons/SidebarSeparator";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./Sidebar.css";
 
 export const Sidebar = () => {
-  const pages = ["Main", "Fractals", "Colors", "Shapes"];
-  
-  // Initialize 'active' state based on localStorage value
-  const [active, setActive] = useState(() => {
-    const savedActive = localStorage.getItem("active");
-    return savedActive !== null ? parseInt(savedActive, 10) : 0;
-  });
-
   const navigate = useNavigate();
-
-  // Update localStorage whenever 'active' changes
-  useEffect(() => {
-    localStorage.setItem("active", active.toString());
-  }, [active]);
+  const location = useLocation();
+  
+  const pages = ["Main", "Fractals", "Colors", "Shapes"];
+  const [currentPage, setCurrentPage] = useState(location.pathname);
 
   const drawSidebar = () => {
     return pages.map((page, i) => (
@@ -28,9 +19,12 @@ export const Sidebar = () => {
           onClick={() => {
             const pageRoute = i === 0 ? '/' : `/${page.toLowerCase()}`;
             navigate(pageRoute);
-            setActive(i);
+            setCurrentPage(pageRoute);
           }}
-          active={active === i}
+          active={
+            currentPage === '/' && i === 0 ||
+            currentPage === `/${page.toLowerCase()}`
+          }
           isFirstElement={i === 0}
         />
         {i === 0 && <SidebarSeparator />}
@@ -44,9 +38,6 @@ export const Sidebar = () => {
         <ul className="flex flex-col justify-center items-center space-y-2 font-medium gap-5">
           {drawSidebar()}
         </ul>
-        {/* <ul className="flex flex-col justify-center items-center space-y-2 font-medium gap-5">
-          <SidebarElement icon={4} onClick={() => { setShowHelp(!showHelp) }} />
-        </ul> */}
       </div>
     </aside>
   );

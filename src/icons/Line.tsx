@@ -1,7 +1,7 @@
 export const Line = () => {
   return (
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_648_85)">
+      <g clipPath="url(#clip0_648_85)">
         <path d="M3.26733 52.1979L55.2673 2.19787" stroke="#DCD7C9" strokeWidth="5" strokeLinecap="round" />
       </g>
       <defs>

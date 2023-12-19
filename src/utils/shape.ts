@@ -49,15 +49,6 @@ export class Shape {
         return [sum[0] / this.verticesMatrix.length, sum[1] / this.verticesMatrix.length];
     }
 
-    getScaleMatrix(sx: number, sy: number): Matrix {
-        const scalingMatrix: Matrix = [
-            [sx, 0, 0],
-            [0, sy, 0],
-            [0, 0, 1],
-        ];
-        return scalingMatrix;
-    }
-
     getRotateMatrix(angleDegree: number): Matrix {
         const angle = (angleDegree * Math.PI) / 180;
         const rotationMatrix: Matrix = [
@@ -77,9 +68,6 @@ export class Shape {
         // Rotation to align with x-axis
         const rotateToXAxis = this.getRotateMatrix(-angle * (180 / Math.PI));
 
-        // Reflection across x-axis
-        const reflectAcrossX = this.getScaleMatrix(1, -1);
-
         // Reverse rotation
         const reverseRotate = this.getRotateMatrix(angle * (180 / Math.PI));
 
@@ -88,7 +76,6 @@ export class Shape {
 
         // Combine transformations
         let matrix = matrixMultiply(translateToOrigin, rotateToXAxis);
-        matrix = matrixMultiply(matrix, reflectAcrossX);
         matrix = matrixMultiply(matrix, reverseRotate);
         matrix = matrixMultiply(matrix, reverseTranslate);
 

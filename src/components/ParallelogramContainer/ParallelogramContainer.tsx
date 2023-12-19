@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from "react";
-import "./ParallelogramContainer.css";
 
 interface ParallelogramContainerProps {
   parallelogram: number[][];
@@ -64,7 +63,6 @@ export const ParallelogramContainer = ({
       console.error("couldn't load canvas for drawLine");
       return;
     }
-
     context.strokeStyle = "blue";
     context.lineWidth = 1;
 
@@ -93,14 +91,16 @@ export const ParallelogramContainer = ({
         clearCanvas(context);
         drawGrid(context);
         drawCoordinateSystem(context);
-        if (line[0] !== 0 && line[1] !== 0) drawLine(canvas);
+        if (line[0] !== 0 && line[1] !== 0) { 
+          drawLine(canvas);
+        }
         drawParallelogram(context);
       }
     }
   }, [drawParallelogram, parallelogram, line, drawLine, canvasRef]);
 
   return (
-    <div className="flex justify-center items-center bg-gray-300 rounded-lg canvas-container">
+    <div className="flex justify-center items-center bg-gray-300 rounded-lg max-w-[700px] max-h-[700px]">
       <canvas
         ref={canvasRef}
         width={canvasWidth}
