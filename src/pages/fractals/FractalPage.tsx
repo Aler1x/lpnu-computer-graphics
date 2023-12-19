@@ -14,32 +14,38 @@ const FractalPage = () => {
   const [currentFractalIndex, setCurrentFractalIndex] = useState(0); // 1/2
   const [iterations, setIterations] = useState(1); // 1-100
   const [colorIndex, setColorIndex] = useState(0); // 0-4
-  const [currentFractalName, setCurrentFractalName] = useState("Фрактал Ньютона");
+  const [currentFractalName, setCurrentFractalName] =
+    useState("Фрактал Ньютона");
   const [steps, setSteps] = useState(10);
   const [max, setMax] = useState(10);
 
-
   useEffect(() => {
-    setCurrentFractalName(currentFractalIndex === 0 ? "Фрактал Ньютона" : "Фрактал Вічека");
+    setCurrentFractalName(
+      currentFractalIndex === 0 ? "Фрактал Ньютона" : "Фрактал Вічека"
+    );
 
     if (currentFractalIndex === 1) {
-      toast.info("Фрактал Вічека є дуже великим, тому ми змінили кількість ітерацій на 5, щоб він відобразився на екрані");
+      toast.info(
+        "Фрактал Вічека є дуже великим, тому ми змінили кількість ітерацій на 5 для оптимального відображення.",
+        { autoClose: 10000 }
+      );
     }
 
-    if (currentFractalIndex === 1 && (
-      localStorage.getItem("vicsek") === "false" ||
-      localStorage.getItem("vicsek") === null
-    )
+    if (
+      currentFractalIndex === 1 &&
+      (localStorage.getItem("vicsek") === "false" ||
+        localStorage.getItem("vicsek") === null)
     ) {
-      toast.success("Вітаю ви створили фрактал Вічека");
+      toast.success("Вітаю! Ви створили фрактал Вічека");
       localStorage.setItem("vicsek", "true");
     }
 
-    if (currentFractalIndex === 0 && (
-      localStorage.getItem("newton") === "false" ||
-      localStorage.getItem("newton") === null)
+    if (
+      currentFractalIndex === 0 &&
+      (localStorage.getItem("newton") === "false" ||
+        localStorage.getItem("newton") === null)
     ) {
-      toast.success("Вітаю ви створили фрактал Ньютона");
+      toast.success("Вітаю! Ви створили фрактал Ньютона");
       localStorage.setItem("newton", "true");
     }
 
@@ -53,16 +59,31 @@ const FractalPage = () => {
       <TabHeader title="Фрактали 🌀" subtitle={currentFractalName} />
       <div className="flex flex-row py-5 gap-x-34">
         {currentFractalIndex === 0 ? (
-          <NewtonFractal iterations={iterations} hueColor={colors[colorIndex]} />
+          <NewtonFractal
+            iterations={iterations}
+            hueColor={colors[colorIndex]}
+          />
         ) : (
           <VicsekFractal iterations={iterations} color={colors[colorIndex]} />
         )}
         <div className="flex flex-col p-3 gap-3">
-          <ChooseFractalButton currentFractalIndex={currentFractalIndex} setCurrentFractalIndex={setCurrentFractalIndex} />
+          <ChooseFractalButton
+            currentFractalIndex={currentFractalIndex}
+            setCurrentFractalIndex={setCurrentFractalIndex}
+          />
           <ControlCard>
-            <ProgressBar progressState={[iterations, setIterations]} steps={steps} max={max} title="Ітерації" />
+            <ProgressBar
+              progressState={[iterations, setIterations]}
+              steps={steps}
+              max={max}
+              title="Ітерації"
+            />
           </ControlCard>
-          <ChooseColorControl colors={[...colors]} setColorIndex={setColorIndex} colorIndex={colorIndex} />
+          <ChooseColorControl
+            colors={[...colors]}
+            setColorIndex={setColorIndex}
+            colorIndex={colorIndex}
+          />
         </div>
       </div>
     </div>
