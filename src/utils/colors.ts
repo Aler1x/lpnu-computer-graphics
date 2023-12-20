@@ -24,7 +24,7 @@ export function rgbToCmyk({ r, g, b }: RGBPoint): CMYKPoint {
   const m = 1 - g / 255;
   const y = 1 - b / 255;
   const k = Math.min(c, m, y);
-  if(k === 1) return { c: 0, m: 0, y: 0, k: 1 };  // black
+  if (k === 1) return { c: 0, m: 0, y: 0, k: 1 }; // black
   return {
     c: (c - k) / (1 - k),
     m: (m - k) / (1 - k),
@@ -42,11 +42,10 @@ export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
 }
 
 export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
-  (r /= 255), 
-  (g /= 255), 
-  (b /= 255);
+  (r /= 255), (g /= 255), (b /= 255);
 
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b);
   const l = (max + min) / 2;
   let h, s;
 
@@ -56,9 +55,15 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
     }
     if (h == undefined) {
       throw new Error("h is undefined");
@@ -66,7 +71,11 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
     h /= 6;
   }
 
-  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
 }
 
 export function hslToRgb(hsl: HSLPoint): RGBPoint {
@@ -75,7 +84,7 @@ export function hslToRgb(hsl: HSLPoint): RGBPoint {
   const l = hsl.l / 100;
 
   const c = (1 - Math.abs(2 * l - 1)) * s;
-  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
   const m = l - c / 2;
 
   let r = 0;
@@ -83,17 +92,29 @@ export function hslToRgb(hsl: HSLPoint): RGBPoint {
   let b = 0;
 
   if (0 <= h && h < 60) {
-    r = c; g = x; b = 0;
+    r = c;
+    g = x;
+    b = 0;
   } else if (60 <= h && h < 120) {
-    r = x; g = c; b = 0;
+    r = x;
+    g = c;
+    b = 0;
   } else if (120 <= h && h < 180) {
-    r = 0; g = c; b = x;
+    r = 0;
+    g = c;
+    b = x;
   } else if (180 <= h && h < 240) {
-    r = 0; g = x; b = c;
+    r = 0;
+    g = x;
+    b = c;
   } else if (240 <= h && h < 300) {
-    r = x; g = 0; b = c;
+    r = x;
+    g = 0;
+    b = c;
   } else if (300 <= h && h < 360) {
-    r = c; g = 0; b = x;
+    r = c;
+    g = 0;
+    b = x;
   }
 
   r = Math.round((r + m) * 255);
@@ -102,7 +123,6 @@ export function hslToRgb(hsl: HSLPoint): RGBPoint {
 
   return { r, g, b };
 }
-
 
 export function cmykToHsl({ c, m, y, k }: CMYKPoint): HSLPoint {
   return rgbToHsl(cmykToRgb({ c, m, y, k }));
@@ -131,7 +151,7 @@ export const adjustForColor = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement,
   lightnessChange: number,
-  saturationChange: number,
+  saturationChange: number
 ) => {
   if (canvas === null) {
     console.error("Canvas is null");
@@ -157,6 +177,38 @@ export const adjustForColor = (
 
   for (let i = 0; i < data.length; i += 4) {
     change(data, i, lightnessChange, saturationChange, isPixelCloseToColor);
+  }
+  ctx.putImageData(imageData, 0, 0);
+};
+
+export const adjustForColorCmykAlgo = (
+  origin: HTMLCanvasElement,
+  canvas: HTMLCanvasElement
+) => {
+  if (canvas === null) {
+    console.error("Canvas is null");
+    return;
+  }
+  const originCtx: CanvasRenderingContext2D | null = origin.getContext("2d");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+
+  if (!ctx || !originCtx) {
+    console.error("Unable to get 2D context from canvas.");
+    return;
+  }
+
+  const imageData: ImageData = originCtx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+  const data: Uint8ClampedArray = imageData.data;
+
+  const isPixelCloseToColor = (pixel: HSLPoint) => isColorCloseToColor(pixel);
+
+  for (let i = 0; i < data.length; i += 4) {
+    changeCmyk(data, isPixelCloseToColor);
   }
   ctx.putImageData(imageData, 0, 0);
 };
@@ -201,13 +253,18 @@ export const adjustForColorSelection = (
   for (let y = startY; y < endY; y++) {
     for (let x = startX; x < endX; x++) {
       const index = (y * canvas.width + x) * 4;
-      change(data, index, lightnessChange, saturationChange, isPixelCloseToColor);
+      change(
+        data,
+        index,
+        lightnessChange,
+        saturationChange,
+        isPixelCloseToColor
+      );
     }
   }
 
   ctx.putImageData(imageData, 0, 0);
-}
-
+};
 
 function change(
   data: Uint8ClampedArray,
@@ -231,6 +288,27 @@ function change(
 
   const rgb = hslToRgb(hsl);
 
+  data[index] = rgb.r;
+  data[index + 1] = rgb.g;
+  data[index + 2] = rgb.b;
+}
+
+function changeCmyk(
+  data: Uint8ClampedArray,
+  index: number
+  // isPixelCloseToColor: (pixel: HSLPoint) => boolean
+) {
+  const pixel = { r: data[index], g: data[index + 1], b: data[index + 2] };
+  let cmyk = rgbToCmyk(pixel);
+
+  cmyk = {
+    c: cmyk.c,
+    m: cmyk.m,
+    y: cmyk.y,
+    k: cmyk.k,
+  };
+
+  const rgb = cmykToRgb(cmyk);
   data[index] = rgb.r;
   data[index + 1] = rgb.g;
   data[index + 2] = rgb.b;
