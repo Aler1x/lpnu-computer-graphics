@@ -38,6 +38,13 @@ const HelpModal = ({ setIsOpen }: HelpModalProps) => {
         className="fixed inset-0 bg-black bg-opacity-50 z-10"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="fox">
+          <img
+            src="https://i.imgur.com/JEYjMzj.png"
+            alt="hi-fox"
+            draggable={false}
+          />
+        </div>
         <div className="flex items-center justify-center h-full">
           <div className="flex flex-col w-1/2 items-center bg-[#2c3639] text-[#dcd7c9] p-8 rounded-lg shadow-xl">
             <h2 className="text-xl font-bold mb-4 leading-10">
