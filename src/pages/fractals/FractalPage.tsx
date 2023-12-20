@@ -26,7 +26,7 @@ const FractalPage = () => {
 
     if (currentFractalIndex === 1) {
       toast.info(
-        "Для Фрактала Вічека кількість ітерацій 5 за замовчуванням для оптимального відображення.",
+        "🌀 Для Фрактала Вічека кількість ітерацій 5 за замовчуванням для оптимального відображення.",
         { autoClose: 10000 }
       );
     }
@@ -36,7 +36,7 @@ const FractalPage = () => {
       (localStorage.getItem("vicsek") === "false" ||
         localStorage.getItem("vicsek") === null)
     ) {
-      toast.success("Вітаю! Ви створили фрактал Вічека");
+      toast.success("Вітаю 🎉 Ви створили фрактал Вічека");
       localStorage.setItem("vicsek", "true");
     }
 
@@ -45,7 +45,7 @@ const FractalPage = () => {
       (localStorage.getItem("newton") === "false" ||
         localStorage.getItem("newton") === null)
     ) {
-      toast.success("Вітаю! Ви створили фрактал Ньютона");
+      toast.success("Вітаю 🎉 Ви створили фрактал Ньютона");
       localStorage.setItem("newton", "true");
     }
 

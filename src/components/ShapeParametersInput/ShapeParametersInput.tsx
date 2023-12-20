@@ -2,6 +2,9 @@ import { Parallelogram } from "../../icons/Paralelogram";
 import { Line } from "../../icons/Line";
 import { toast } from "react-toastify";
 import "./ShapeParametersInput.css";
+import HelpModal from "../HelpModal/HelpModal";
+import { useState } from "react";
+import { SidebarElement } from "../Sidebar/SidebarElement/SidebarElement";
 
 interface ShapeParametersInputProps {
   parallelogram: number[][];
@@ -12,15 +15,31 @@ const ShapeParametersInput = ({
   parallelogram,
   line,
 }: ShapeParametersInputProps) => {
+  const [openModal, setOpenModal] = useState(false);
+
   const onParallelogramClick = () => {
-    toast.success("Вітаю ви знайшли таємну кнопку");
+    toast.success("Вітаю 🎉 Ви знайшли таємну кнопку.");
   };
 
   return (
     <div className="flex flex-col color">
+      {openModal && (
+        <HelpModal
+          setIsOpen={() => setOpenModal(false)}
+          customPage="Parallelogram instructions"
+        />
+      )}
       <div className="px-4">
-        <div onClick={onParallelogramClick}>
-          <Parallelogram />
+        <div className="flex flex-row justify-between">
+          <div
+            className="flex flex-col justify-center items-center"
+            onClick={onParallelogramClick}
+          >
+            <Parallelogram />
+          </div>
+          <ul className="flex flex-col justify-center items-center space-y-2 font-light gap-5 p-1">
+            <SidebarElement icon={4} onClick={() => setOpenModal(true)} />
+          </ul>
         </div>
         <div>
           <div className="flex flex-row p-4 gap-2">

@@ -3,9 +3,10 @@ import { useHelpModalContext } from "../Sidebar/Sidebar";
 
 interface HelpModalProps {
   setIsOpen: () => void;
+  customPage?: string;
 }
 
-const HelpModal = ({ setIsOpen }: HelpModalProps) => {
+const HelpModal = ({ setIsOpen, customPage = "Main" }: HelpModalProps) => {
   const currentPage = useHelpModalContext();
 
   const pageToTexts = [
@@ -17,6 +18,11 @@ const HelpModal = ({ setIsOpen }: HelpModalProps) => {
       header: "Афінні трансформації для руху паралелограма",
       text: "Для того, щоби надати динаміку паралелограму, заданого трьома його вершинами, ми використовуємо афінні перетворення. Це дозволяє нам ефективно реалізувати його рух за допомогою дзеркального відображення відносно обраної прямої, рівняння якої має вигляд у=ах+b.\n\nВведіть коефіцієнти а і b, щоб побачити, як паралелограм віддзеркалюється та переміщується в просторі.",
     },
+    {
+      pageName: "Parallelogram instructions",
+      header: "Як взаємодіяти із паралелограмом?",
+      text: "Для цього введи три точки паралелограма: A, B і C. Не хвилюйся: точку D ми знайдемо за тебе 😊\n\nПісля цього, вкажи параметри A та B для прямохї y = A * x + B. Відносно цієї прямої ми переміщатимемо паралелограм!",
+    },
   ];
 
   const [currentHeader, setCurrentHeader] = useState("");
@@ -26,7 +32,11 @@ const HelpModal = ({ setIsOpen }: HelpModalProps) => {
     const pageValues =
       pageToTexts.find((p) =>
         currentPage.toLocaleLowerCase().includes(p.pageName.toLocaleLowerCase())
-      ) || pageToTexts[0];
+      ) ||
+      pageToTexts.find((p) =>
+        customPage.toLocaleLowerCase().includes(p.pageName.toLocaleLowerCase())
+      ) ||
+      pageToTexts[0];
     if (!pageValues) return;
     pageValues.header && setCurrentHeader(pageValues.header);
     pageValues.text && setCurrentText(pageValues.text);
@@ -59,7 +69,7 @@ const HelpModal = ({ setIsOpen }: HelpModalProps) => {
               ))}
             </p>
             <button
-              className="mt-auto p-4 rounded text-[#2c3639] bg-[#dcd7c9] mt-4"
+              className="p-4 rounded text-[#2c3639] bg-[#dcd7c9] mt-4"
               onClick={setIsOpen}
             >
               Закрити
