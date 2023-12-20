@@ -3,8 +3,6 @@ import { useHelpModalContext } from "../Sidebar/Sidebar";
 
 interface HelpModalProps {
   setIsOpen: () => void;
-  text: string;
-  header: string;
 }
 
 const HelpModal = ({ setIsOpen }: HelpModalProps) => {
@@ -45,9 +43,16 @@ const HelpModal = ({ setIsOpen }: HelpModalProps) => {
             <h2 className="text-xl font-bold mb-4 leading-10">
               {currentHeader}
             </h2>
-            <p className="mb-4">{currentText}</p>
+            <p>
+              {currentText.split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
+            </p>
             <button
-              className="mt-auto p-4 rounded text-[#2c3639] bg-[#dcd7c9]"
+              className="mt-auto p-4 rounded text-[#2c3639] bg-[#dcd7c9] mt-4"
               onClick={setIsOpen}
             >
               Закрити

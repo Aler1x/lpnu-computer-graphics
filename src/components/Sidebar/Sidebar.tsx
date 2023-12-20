@@ -4,7 +4,6 @@ import { SidebarSeparator } from "../../icons/SidebarSeparator";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import HelpModal from "../HelpModal/HelpModal";
-import { shape_header, shape_text } from "../../utils/text";
 
 const HelpModalContext = createContext("");
 
@@ -59,13 +58,7 @@ export const Sidebar = () => {
             </ul>
           </div>
         </aside>
-        {modalIsOpen && (
-          <HelpModal
-            setIsOpen={closeModal}
-            header={shape_header}
-            text={shape_text}
-          />
-        )}
+        {modalIsOpen && <HelpModal setIsOpen={closeModal} />}
       </div>
     </HelpModalContext.Provider>
   );
