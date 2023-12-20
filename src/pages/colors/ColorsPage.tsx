@@ -9,6 +9,7 @@ import {
   getImagePixel,
   adjustForColor,
   adjustForColorSelection,
+  adjustForColorCmykAlgo,
 } from "../../utils/colors";
 import ControlCard from "../../components/ControlCard/ControlCard";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";

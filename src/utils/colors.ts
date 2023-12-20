@@ -312,6 +312,7 @@ function changeCmyk(
   data[index] = rgb.r;
   data[index + 1] = rgb.g;
   data[index + 2] = rgb.b;
+  console.log("changed to cmyk");
 }
 
 function isColorCloseToColor(color: HSLPoint) {
