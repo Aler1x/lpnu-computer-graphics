@@ -24,6 +24,7 @@ export function rgbToCmyk({ r, g, b }: RGBPoint): CMYKPoint {
   const m = 1 - g / 255;
   const y = 1 - b / 255;
   const k = Math.min(c, m, y);
+  if(k === 1) return { c: 0, m: 0, y: 0, k: 1 };  // black
   return {
     c: (c - k) / (1 - k),
     m: (m - k) / (1 - k),
@@ -235,8 +236,8 @@ function change(
   data[index + 2] = rgb.b;
 }
 
-function isColorCloseToColor(color1: HSLPoint) {
-  return Math.abs(color1.h - 60) < 30;
+function isColorCloseToColor(color: HSLPoint) {
+  return Math.abs(color.h - 60) < 30;
 }
 
 // not in use
