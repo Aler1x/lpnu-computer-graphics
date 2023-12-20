@@ -1,11 +1,21 @@
+import { useEffect } from "react";
 import TabHeader from "../../components/TabHeader/TabHeader";
 import "./MainPage.css";
+import { toast } from "react-toastify";
 
 const MainPage = () => {
   const handle1Click = () => {
     window.location.href =
       "https://drive.google.com/file/d/1kw1nXLotvIY-_mmSPFG-7P54q05UHCQB/view?usp=drive_link";
   };
+
+  useEffect(() => {
+    const fox = document.querySelector(".fox") as HTMLDivElement;
+    fox.addEventListener("click", () => {
+      toast.success("Привіт! 👋")
+    }
+    );
+  }, []);
 
   return (
     <div className="p-8">
