@@ -11,9 +11,15 @@ const MainPage = () => {
 
   useEffect(() => {
     const fox = document.querySelector(".fox") as HTMLDivElement;
-    fox.addEventListener("click", () => {
-      toast.success("Привіт! 👋")
-    }
+    fox.addEventListener(
+      "click",
+      () => {
+        toast.success(
+          "Привіт! 👋 Я - Джинджер, і я допоможу тобі розібратися із компʼютерною графікою 🌈",
+          { autoClose: 10000 }
+        );
+      },
+      {}
     );
   }, []);
 
