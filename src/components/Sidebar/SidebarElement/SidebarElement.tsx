@@ -28,7 +28,7 @@ export const SidebarElement = ({
   };
 
   return (
-    <li>
+    <li className="hover:cursor-pointer">
       <a
         className={`flex items-center p-2 rounded-lg group ${
           active && (isFirstElement ? "selected-first-element" : "selected")
