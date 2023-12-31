@@ -11,17 +11,21 @@ const MainPage = () => {
 
   useEffect(() => {
     const fox = document.querySelector(".fox") as HTMLDivElement;
-    fox.addEventListener(
-      "click",
-      () => {
-        toast.success(
-          "Привіт! 👋 Я - Джинджер, і я допоможу тобі розібратися із компʼютерною графікою 🌈",
-          { autoClose: 10000 }
-        );
-      },
-      {}
-    );
-  }, []);
+
+    const handleClick = () => {
+      toast.success(
+        "Привіт! 👋 Я - Джинджер, і я допоможу тобі розібратися із компʼютерною графікою 🌈",
+        { autoClose: 10000 }
+      );
+    };
+
+    fox.addEventListener("click", handleClick);
+
+    return () => {
+      // Cleanup the event listener on component unmount
+      fox.removeEventListener("click", handleClick);
+    };
+  }, []); // Empty dependency array to run the effect only once on mount
 
   return (
     <div className="p-8">
