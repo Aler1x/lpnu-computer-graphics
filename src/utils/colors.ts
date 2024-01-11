@@ -19,11 +19,13 @@ export type HSLPoint = {
 
 type Optional<T> = T | undefined;
 
+// Функція конвертації з RGB до CMYK
 export function rgbToCmyk({ r, g, b }: RGBPoint): CMYKPoint {
   const c = 1 - r / 255;
   const m = 1 - g / 255;
   const y = 1 - b / 255;
   const k = Math.min(c, m, y);
+  // Якщо колір чорний, повертаємо чорний
   if (k === 1) return { c: 0, m: 0, y: 0, k: 1 }; // black
   return {
     c: (c - k) / (1 - k),
@@ -33,6 +35,7 @@ export function rgbToCmyk({ r, g, b }: RGBPoint): CMYKPoint {
   };
 }
 
+// Функція конвертації з CMYK до RGB
 export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
   return {
     r: 255 * (1 - c) * (1 - k),
@@ -41,6 +44,8 @@ export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
   };
 }
 
+
+// Функція конвертації з RGB до HSL
 export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
   (r /= 255), (g /= 255), (b /= 255);
 
@@ -78,6 +83,7 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
   };
 }
 
+// Конвертація з HSL до RGB
 export function hslToRgb(hsl: HSLPoint): RGBPoint {
   const h = hsl.h;
   const s = hsl.s / 100;
@@ -132,6 +138,7 @@ export function hslToCmyk({ h, s, l }: HSLPoint): CMYKPoint {
   return rgbToCmyk(hslToRgb({ h, s, l }));
 }
 
+// Функція для отримання пікселя з canvas
 export const getImagePixel = (
   canvas: HTMLCanvasElement,
   offsetX = 0,
@@ -147,6 +154,7 @@ export const getImagePixel = (
   return ctx.getImageData(offsetX, offsetY, 1, 1);
 };
 
+// Функція для зміни зображення на canvas
 export const adjustForColor = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement,
@@ -181,6 +189,7 @@ export const adjustForColor = (
   ctx.putImageData(imageData, 0, 0);
 };
 
+// Функція для зміни зображення на canvas через CMYK
 export const adjustForColorCmykAlgo = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement
@@ -205,14 +214,13 @@ export const adjustForColorCmykAlgo = (
   );
   const data: Uint8ClampedArray = imageData.data;
 
-  const isPixelCloseToColor = (pixel: HSLPoint) => isColorCloseToColor(pixel);
-
   for (let i = 0; i < data.length; i += 4) {
-    changeCmyk(data, isPixelCloseToColor);
+    changeCmyk(data, i);
   }
   ctx.putImageData(imageData, 0, 0);
 };
 
+// Функція для зміни зображення на canvas у вибраній області
 export const adjustForColorSelection = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement,
@@ -266,6 +274,7 @@ export const adjustForColorSelection = (
   ctx.putImageData(imageData, 0, 0);
 };
 
+// Функція для зміни пікселя на зображенні
 function change(
   data: Uint8ClampedArray,
   index: number,
