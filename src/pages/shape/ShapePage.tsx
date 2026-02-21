@@ -47,7 +47,7 @@ const ShapePage = () => {
     setParallelogram([A, B, C, D]);
     myShape = new Shape(parallelogram);
     if (isOnTheSameLine(parallelogram)) {
-      toast.error("Це не паралелограм");
+      toast.error("🙅 Введіть точки для побудови паралелограма!");
       return;
     }
   };

@@ -29,9 +29,9 @@ const ChooseFractalButton = ({ currentFractalIndex, setCurrentFractalIndex }: Ch
     <div className="fractal-button-container">
       <FunctionIcon />
       <div className="flex flex-row justify-between items-center gap-4">
-        <LeftButton onClick={handleLeftClick} />
+        <LeftButton onClick={handleLeftClick} style="hover:cursor-pointer" />
         <p className="fractal-button-text">{currentFractal}</p>
-        <RightButton onClick={handleRightClick} />
+        <RightButton onClick={handleRightClick} style="hover:cursor-pointer" />
       </div>
     </div>
   );

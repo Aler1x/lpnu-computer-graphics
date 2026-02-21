@@ -9,6 +9,7 @@ import {
   getImagePixel,
   adjustForColor,
   adjustForColorSelection,
+  adjustForColorCmykAlgo,
 } from "../../utils/colors";
 import ControlCard from "../../components/ControlCard/ControlCard";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
@@ -78,14 +79,12 @@ const ColorsPage = () => {
   useEffect(() => {
     if (
       localStorage.getItem("colors") === "false" ||
-      localStorage.getItem("colors") === null &&
-      cmykValues.k === 1
+      (localStorage.getItem("colors") === null && cmykValues.k === 1)
     ) {
       toast.success("Ви знайшли знайшли істинно чорний колір");
       localStorage.setItem("colors", "true");
     }
   }, [cmykValues.k]);
-
 
   useEffect(() => {
     if (showSelection && editingCanvas.current && originCanvas.current) {
@@ -152,6 +151,12 @@ const ColorsPage = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCmykChange = () => {
+    const origin = originCanvas.current as HTMLCanvasElement;
+    const change = editingCanvas.current as HTMLCanvasElement;
+    adjustForColorCmykAlgo(origin, change);
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -335,6 +340,21 @@ const ColorsPage = () => {
               toFixed={2}
               title="Насиченість"
             />
+          </ControlCard>
+          <ControlCard>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleCmykChange}
+              style={{ display: "none", color: "#2c3639" }}
+              id="image-upload"
+            />
+            <label
+              htmlFor="image-upload"
+              className="flex flex-row gap-2 text-2xl"
+            >
+              Застосувати зміни CMYK
+            </label>
           </ControlCard>
         </div>
       </div>
