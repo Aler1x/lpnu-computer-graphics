@@ -1,30 +1,22 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MainPage from "./pages/main/MainPage";
-import FractalPage from "./pages/fractals/FractalPage";
-import ColorsPage from "./pages/colors/ColorsPage";
-import ShapePage from './pages/shape/ShapePage';
-import { Sidebar } from './components/Sidebar/Sidebar';
-import "./App.css";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import FractalsPage from "@/pages/Fractals";
+import ColorsPage from "@/pages/Colors";
+import ShapesPage from "@/pages/Shapes";
+import { Sidebar } from "@/components/Sidebar";
 
 export const App = () => {
   return (
-    <>
-      <Router>
+    <BrowserRouter>
+      <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/fractals" element={<FractalPage />} />
-          <Route path="/colors" element={<ColorsPage />} />
-          <Route path="/shapes" element={<ShapePage />} />
-        </Routes>
-      </Router>
-      <ToastContainer
-        autoClose={2000}
-        draggable={false}
-        limit={2}
-      />
-    </>
+        <main className="flex-1 min-h-0 overflow-auto p-4">
+          <Routes>
+            <Route path="/" element={<FractalsPage />} />
+            <Route path="/colors" element={<ColorsPage />} />
+            <Route path="/shapes" element={<ShapesPage />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 };

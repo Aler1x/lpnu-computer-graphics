@@ -1,32 +1,28 @@
 #version 300 es
 
-precision highp float; // Висока точність
+precision highp float;
 
-out vec4 outColor; // Колір пікселя
+out vec4 outColor;
+uniform float width;
+uniform float height;
+uniform int power;
+uniform int iterations;
+uniform float hueShift;
 
-uniform float width; // Розмір екрану
-uniform float height; // Розмір екрану
-uniform int power; // Степінь
-uniform int iterations; // Кількість ітерацій
+bool error;
 
-uniform float hueShift; // Зміщення кольору
+#define complex vec2
 
-bool error; // Помилка
+uniform vec2 mousepos;
 
-#define complex vec2 // Визначення комплексного числа
-
-uniform complex mousepos; // Позиція миші
-
-const complex c_nan = complex(10000.0, 20000.0); // Комплексне число для помилок
-const float PI = 3.1415926535897932384626433832795; // Визначення числа Пі
+const complex c_nan = complex(10000.0, 20000.0);
+const float PI = 3.1415926535897932384626433832795;
 
 
-// Функція перевірки розбіжності комплексного числа
 bool diverges(complex z) {
   return z.x >= 10000.0 || z.y >= 10000.0;
 }
 
-// Функція для отримання аргументу комплексного числа
 float c_arg(complex z) {
   if (z == complex(0, 0)) {
     error = true;
@@ -34,9 +30,8 @@ float c_arg(complex z) {
   return atan(z.y, z.x);
 }
 
-#define c_abs(a) length(a) // Визначення модуля комплексного числа
+#define c_abs(a) length(a)
 
-// Функція піднесення комплексного числа до ступеня
 complex c_pow(complex z, complex w) {
   float r = c_abs(z);
   float theta = c_arg(z);
@@ -53,7 +48,6 @@ complex c_pow(complex z, complex w) {
 }
 
 
-// Функції для арифметичних операцій з комплексними числами
 complex c_sub(complex x, complex y) {
   return complex(x.x-y.x, x.y-y.y);
 }
@@ -87,27 +81,30 @@ complex c_scale(complex z, float x) {
   return complex(z.x * x, z.y * x);
 }
 
-// Функція конвертації HSV до RGB
 vec3 hsv2rgb(vec3 c) {
   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www); // fract = (x) =>  x - floor(x)
   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y); // clamp =  (x) => min(max(x, minVal), maxVal), 
 }
 
-// Функція отримання кольору з HSV
 vec4 getColor(float h, float s, float v) {
   return vec4(hsv2rgb(vec3(h, s, v)), 1);
 }
 
 float c_arg_sin(complex z) {
-  if (z == complex(0, 0)) {
+  if (z.x == 0.0 && z.y == 0.0) {
     error = true;
+    return 0.0;
   }
-  return sin(z.y/z.x);
+  if (abs(z.x) < 1e-10) {
+    error = true;
+    return 0.0;
+  }
+  return sin(z.y / z.x);
 }
 
-// Функція методу Ньютона для фракталів
 vec4 newtonsMethod(complex c) {
+  error = false;
   complex z = c;
   int steps = 100;
 
@@ -116,9 +113,10 @@ vec4 newtonsMethod(complex c) {
     power1 = power;
   }
 
-  complex m = 0.5 * (mousepos - 0.5 * complex(width, height));
+  complex m = 0.5 * (mousepos - 0.5 * vec2(width, height));
 
   for (int i = 0; i < iterations; i++) {
+    error = false;
     complex f = c_add(c_pow(z,complex(power1, 0.0)),m); // z^power + m
     complex fp = c_add(c_mul(complex(power1, 0.0),c_pow(z,complex(power1 - 1, 0.0))),complex(0, 0.0));
 
@@ -137,7 +135,6 @@ vec4 newtonsMethod(complex c) {
     z = z1;
   }
 
-  // Make color based on z
   float hue = abs(c_arg_sin(z)/8.0/PI - hueShift);
 
   float saturation = 1.0 /sqrt(c_abs(z));
@@ -158,10 +155,8 @@ vec4 newtonsMethod(complex c) {
 void main() {
   vec2 pos = gl_FragCoord.xy;
   
-  // Нормалізація координат
   float normalizedX = (pos.x - width/2.0) / height;
   float normalizedY = (pos.y - height/2.0) / height;
 
-  // Виклик методу Ньютона і запис результату в outColor
   outColor = newtonsMethod(c_scale(complex(normalizedX, normalizedY), 4.0));
 }

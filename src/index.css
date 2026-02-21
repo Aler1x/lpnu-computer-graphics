@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 html {
   margin: 0 auto;
@@ -16,9 +14,19 @@ body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: hsl(44, 21%, 83%);
 }
 
-#root {
-  display: flex;
-  flex-direction: row;
+@keyframes slideOut {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
+
+.animate-slide-out {
+  animation: slideOut 1s ease-out;
+}
+

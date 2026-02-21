@@ -1,27 +1,76 @@
-# React + TypeScript + Vite
+# Computer Graphics (LPNU)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive web app for computer graphics: Newton and Vicsek fractals, color schemes (RGB/HSL/CMYK), and affine transformations with a parallelogram.
 
-Currently, two official plugins are available:
+## Tech stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** + **TypeScript**
+- **Vite 7** — build and dev server
+- **Tailwind CSS 4** — styling
+- **React Router 6** — routing
+- **WebGL 2** — Newton and Vicsek fractal rendering
+- **Canvas 2D** — Colors page and Shapes (parallelogram) drawing
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+pnpm install
+pnpm dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- **Lint:** `pnpm lint`
+- **Build:** `pnpm build`
+- **Preview:** `pnpm preview`
+
+## Routes
+
+| Path     | Page   | Description                                      |
+|----------|--------|--------------------------------------------------|
+| `/`      | Fractals | Newton and Vicsek fractals with iterations/color |
+| `/colors`| Colors | Image upload, HSL/CMYK, lightness/saturation     |
+| `/shapes`| Shapes | Parallelogram and mirror-line transformation    |
+
+## Features
+
+- **Fractals**
+  - **Newton fractal** — WebGL; Newton’s method in the complex plane; mouse-driven parameter; iterations and hue.
+  - **Vicsek fractal** — WebGL; 3×3 cross pattern; iterations, color, wheel zoom and pan.
+- **Colors**
+  - Upload image, view original and edited side by side.
+  - Lightness and saturation sliders (HSL).
+  - Region selection for local adjustments.
+  - CMYK conversion and “Apply CMYK” option.
+  - Hover pixel: RGB, HSL, CMYK readout.
+- **Shapes**
+  - Parallelogram from points A, B, C (D computed).
+  - Line `y = ax + b` for mirror axis.
+  - “Draw parallelogram” and “Start motion” (mirror + translate).
+
+## Project layout
+
+```
+src/
+  App.tsx              — Router, layout, Sidebar
+  main.tsx             — React root
+  index.css            — Tailwind + globals
+  pages/               — Fractals, Colors, Shapes
+  components/          — UI (Sidebar, ControlCard, TabHeader, ProgressBar, HelpModal)
+  components/fractals/ — NewtonFractal, VicsekFractal, Settings
+  components/figures/  — ParallelogramContainer, ShapeParametersInput
+  utils/               — newton-fractal, vicsek-fractal-webgl, webgl, colors, shape
+  assets/icons/        — SVGs (sidebar, figures, help)
+public/                — vertex/fragment shaders (Newton, Vicsek)
+docs/                  — newton-fractal, vicsek-fractal, architecture, colors, shapes
+```
+
+## Documentation
+
+- [Architecture](docs/architecture.md) — structure, tech stack, file map
+- [Newton fractal](docs/newton-fractal.md) — algorithm, shaders, uniforms
+- [Vicsek fractal](docs/vicsek-fractal.md) — algorithm, WebGL, zoom
+- [Colors](docs/colors.md) — color models, image adjustments, UI
+- [Shapes](docs/shapes.md) — parallelogram, mirror line, affine transforms
+
+## License
+
+Private / educational (LPNU).

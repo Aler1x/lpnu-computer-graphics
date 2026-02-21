@@ -45,9 +45,17 @@ export function cmykToRgb({ c, m, y, k }: CMYKPoint): RGBPoint {
 }
 
 
-// Функція конвертації з RGB до HSL
+/**
+ * Function to convert from RGB to HSL.
+ * @param r - The red component of the RGB color.
+ * @param g - The green component of the RGB color.
+ * @param b - The blue component of the RGB color.
+ * @returns The HSL color.
+ */
 export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
-  (r /= 255), (g /= 255), (b /= 255);
+  r /= 255;
+  g /= 255;
+  b /= 255;
 
   const max = Math.max(r, g, b),
     min = Math.min(r, g, b);
@@ -83,7 +91,11 @@ export function rgbToHsl({ r, g, b }: RGBPoint): HSLPoint {
   };
 }
 
-// Конвертація з HSL до RGB
+/**
+ * Function to convert from HSL to RGB.
+ * @param hsl - The HSL color.
+ * @returns The RGB color.
+ */
 export function hslToRgb(hsl: HSLPoint): RGBPoint {
   const h = hsl.h;
   const s = hsl.s / 100;
@@ -138,7 +150,13 @@ export function hslToCmyk({ h, s, l }: HSLPoint): CMYKPoint {
   return rgbToCmyk(hslToRgb({ h, s, l }));
 }
 
-// Функція для отримання пікселя з canvas
+/**
+ * Function to get a pixel from a canvas.
+ * @param canvas - The canvas to get the pixel from.
+ * @param offsetX - The x offset of the pixel.
+ * @param offsetY - The y offset of the pixel.
+ * @returns The pixel data.
+ */
 export const getImagePixel = (
   canvas: HTMLCanvasElement,
   offsetX = 0,
@@ -154,7 +172,13 @@ export const getImagePixel = (
   return ctx.getImageData(offsetX, offsetY, 1, 1);
 };
 
-// Функція для зміни зображення на canvas
+/**
+ * Function to adjust the color of an image on a canvas.
+ * @param origin - The original canvas.
+ * @param canvas - The canvas to adjust the color of.
+ * @param lightnessChange - The lightness change.
+ * @param saturationChange - The saturation change.
+ */
 export const adjustForColor = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement,
@@ -189,7 +213,11 @@ export const adjustForColor = (
   ctx.putImageData(imageData, 0, 0);
 };
 
-// Функція для зміни зображення на canvas через CMYK
+/**
+ * Function to adjust the color of an image on a canvas through CMYK.
+ * @param origin - The original canvas.
+ * @param canvas - The canvas to adjust the color of.
+ */
 export const adjustForColorCmykAlgo = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement
@@ -220,7 +248,15 @@ export const adjustForColorCmykAlgo = (
   ctx.putImageData(imageData, 0, 0);
 };
 
-// Функція для зміни зображення на canvas у вибраній області
+/**
+ * Function to adjust the color of an image on a canvas in a selected region.
+ * @param origin - The original canvas.
+ * @param canvas - The canvas to adjust the color of.
+ * @param lightnessChange - The lightness change.
+ * @param saturationChange - The saturation change.
+ * @param regionStart - The start of the region.
+ * @param regionEnd - The end of the region.
+ */
 export const adjustForColorSelection = (
   origin: HTMLCanvasElement,
   canvas: HTMLCanvasElement,
@@ -274,7 +310,14 @@ export const adjustForColorSelection = (
   ctx.putImageData(imageData, 0, 0);
 };
 
-// Функція для зміни пікселя на зображенні
+/**
+ * Function to change a pixel on an image.
+ * @param data - The data of the image.
+ * @param index - The index of the pixel.
+ * @param lightnessChange - The lightness change.
+ * @param saturationChange - The saturation change.
+ * @param isPixelCloseToColor - A function to check if a pixel is close to a color.
+ */
 function change(
   data: Uint8ClampedArray,
   index: number,
@@ -302,10 +345,14 @@ function change(
   data[index + 2] = rgb.b;
 }
 
+/**
+ * Function to change a pixel on an image through CMYK.
+ * @param data - The data of the image.
+ * @param index - The index of the pixel.
+ */
 function changeCmyk(
   data: Uint8ClampedArray,
   index: number
-  // isPixelCloseToColor: (pixel: HSLPoint) => boolean
 ) {
   const pixel = { r: data[index], g: data[index + 1], b: data[index + 2] };
   let cmyk = rgbToCmyk(pixel);
@@ -324,11 +371,21 @@ function changeCmyk(
   console.log("changed to cmyk");
 }
 
+/**
+ * Function to check if a color is close to a color.
+ * @param color - The color to check.
+ * @returns True if the color is close to a color, false otherwise.
+ */
 function isColorCloseToColor(color: HSLPoint) {
   return Math.abs(color.h - 60) < 30;
 }
 
-// not in use
+/**
+ * Function to set all pixels on a canvas to white.
+ * @param canvas - The canvas to set the pixels on.
+ * @param regionStart - The start of the region.
+ * @param regionEnd - The end of the region.
+ */
 export const setAllWhite = (
   canvas: HTMLCanvasElement,
   regionStart: { x: number; y: number },
@@ -374,6 +431,11 @@ export const setAllWhite = (
   ctx.putImageData(imageData, 0, 0);
 };
 
+/**
+ * Function to get the image data from an image.
+ * @param image - The image to get the data from.
+ * @returns The image data.
+ */
 export const getImageData = (image: HTMLImageElement): Optional<ImageData> => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -391,6 +453,13 @@ export const getImageData = (image: HTMLImageElement): Optional<ImageData> => {
   }
 };
 
+/**
+ * Function to convert image data to a data URL.
+ * @param imageData - The image data to convert.
+ * @param width - The width of the image.
+ * @param height - The height of the image.
+ * @returns The data URL.
+ */
 export function imageDataToDataUrl(
   imageData: ImageData,
   width = imageData.width,

@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)!;
   gl.shaderSource(shader, source);
@@ -19,17 +17,18 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
   try {
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
-  } catch (e) {
-    toast.error('Failed to attach shaders');
-    throw "Didn't compile!"
+  } catch {
+    throw new Error("Didn't compile!");
   }
 
   gl.linkProgram(program);
   const success = gl.getProgramParameter(program, gl.LINK_STATUS);
   if (success) {
-    return program
+    return program;
   }
+  const log = gl.getProgramInfoLog(program);
   gl.deleteProgram(program);
+  throw new Error(`Program link failed: ${log ?? "unknown error"}`);
 }
 
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement) {
@@ -51,6 +50,7 @@ type UniformType = "1f" | "2f" | "3f" | "1i";
 
 function setUniform(gl: WebGL2RenderingContext, program: WebGLProgram, type: UniformType, name: string, value: number | number[]) {
   const location = gl.getUniformLocation(program, name);
+  if (location === null) return;
 
   if (type === "1f" && typeof value === "number") {
     gl.uniform1f(location, value);
