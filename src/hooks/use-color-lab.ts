@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type MouseEvent, type RefObject } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type MouseEvent, type RefObject } from "react";
 import {
   adjustForColor,
   adjustForColorCmykAlgo,
@@ -11,18 +11,23 @@ import {
   type RGBPoint,
 } from "@/utils/colors";
 
-const MAX_IMAGE_SIZE = 400;
-const DEFAULT_IMAGE = "/samples/color-template.svg";
+const DEFAULT_IMAGE = "/samples/color-template.png";
+const MAX_FRAME = { width: 640, height: 360 };
 
-function loadImage(imagePath: string, canvas: HTMLCanvasElement) {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+export type ImageFrame = { width: number; height: number };
 
-  const image = new Image();
-  image.onload = () => {
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+function frameFor(width: number, height: number): ImageFrame {
+  const scale = Math.min(MAX_FRAME.width / width, MAX_FRAME.height / height);
+  return {
+    width: Math.max(1, Math.round(width * scale)),
+    height: Math.max(1, Math.round(height * scale)),
   };
-  image.src = imagePath;
+}
+
+function bufferPoint(canvas: HTMLCanvasElement, x: number, y: number) {
+  const scaleX = canvas.clientWidth > 0 ? canvas.width / canvas.clientWidth : 1;
+  const scaleY = canvas.clientHeight > 0 ? canvas.height / canvas.clientHeight : 1;
+  return { x: Math.round(x * scaleX), y: Math.round(y * scaleY) };
 }
 
 export function useColorLab(
@@ -34,10 +39,10 @@ export function useColorLab(
   const [saturation, setSaturation] = useState(1);
   const [showHoverSquare, setShowHoverSquare] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [frame, setFrame] = useState<ImageFrame>({ width: 640, height: 360 });
   const [fileName, setFileName] = useState<string | null>("Шаблон");
   const [imageSrc, setImageSrc] = useState<string | null>(DEFAULT_IMAGE);
   const [originImage, setOriginImage] = useState<string | null>(DEFAULT_IMAGE);
-  const [editingImage, setEditingImage] = useState<string | null>(DEFAULT_IMAGE);
   const [rgbValues, setRgbValues] = useState<RGBPoint>({ r: 0, g: 0, b: 0 });
   const [hslValues, setHslValues] = useState<HSLPoint>({ h: 0, s: 0, l: 0 });
   const [cmykValues, setCmykValues] = useState<CMYKPoint>({
@@ -50,6 +55,22 @@ export function useColorLab(
   const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
   const [isSelecting, setIsSelecting] = useState(false);
   const [showSelection, setShowSelection] = useState(false);
+  const adjustmentRef = useRef({
+    lightness,
+    saturation,
+    showSelection,
+    selectionStart,
+    selectionEnd,
+  });
+  useEffect(() => {
+    adjustmentRef.current = {
+      lightness,
+      saturation,
+      showSelection,
+      selectionStart,
+      selectionEnd,
+    };
+  }, [lightness, saturation, showSelection, selectionStart, selectionEnd]);
 
   useEffect(() => {
     if (
@@ -63,24 +84,24 @@ export function useColorLab(
   useEffect(() => {
     if (!editingCanvas.current || !originCanvas.current) return;
 
+    const origin = originCanvas.current;
+    const editing = editingCanvas.current;
+    const start = bufferPoint(origin, selectionStart.x, selectionStart.y);
+    const end = bufferPoint(origin, selectionEnd.x, selectionEnd.y);
+
     if (showSelection) {
       adjustForColorSelection(
-        originCanvas.current,
-        editingCanvas.current,
+        origin,
+        editing,
         lightness - 1,
         saturation - 1,
-        selectionStart,
-        selectionEnd,
+        start,
+        end,
       );
       return;
     }
 
-    adjustForColor(
-      originCanvas.current,
-      editingCanvas.current,
-      lightness - 1,
-      saturation - 1,
-    );
+    adjustForColor(origin, editing, lightness - 1, saturation - 1);
   }, [
     lightness,
     saturation,
@@ -92,13 +113,38 @@ export function useColorLab(
   ]);
 
   useEffect(() => {
-    if (originImage && originCanvas.current) {
-      loadImage(originImage, originCanvas.current);
-    }
-    if (editingImage && editingCanvas.current) {
-      loadImage(editingImage, editingCanvas.current);
-    }
-  }, [originImage, editingImage, originCanvas, editingCanvas]);
+    const origin = originCanvas.current;
+    const editing = editingCanvas.current;
+    if (!originImage || !origin || !editing) return;
+
+    const image = new Image();
+    let cancelled = false;
+    image.onload = () => {
+      if (cancelled) return;
+      const next = frameFor(image.naturalWidth, image.naturalHeight);
+      origin.width = next.width;
+      origin.height = next.height;
+      editing.width = next.width;
+      editing.height = next.height;
+      origin.getContext("2d")?.drawImage(image, 0, 0, next.width, next.height);
+      setFrame((current) =>
+        current.width === next.width && current.height === next.height ? current : next,
+      );
+
+      const view = adjustmentRef.current;
+      const start = bufferPoint(origin, view.selectionStart.x, view.selectionStart.y);
+      const end = bufferPoint(origin, view.selectionEnd.x, view.selectionEnd.y);
+      if (view.showSelection) {
+        adjustForColorSelection(origin, editing, view.lightness - 1, view.saturation - 1, start, end);
+        return;
+      }
+      adjustForColor(origin, editing, view.lightness - 1, view.saturation - 1);
+    };
+    image.src = originImage;
+    return () => {
+      cancelled = true;
+    };
+  }, [originImage, originCanvas, editingCanvas]);
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -110,7 +156,6 @@ export function useColorLab(
       const result = String(e.target?.result);
       setImageSrc(result);
       setOriginImage(result);
-      setEditingImage(result);
       setShowSelection(false);
     };
     reader.readAsDataURL(file);
@@ -126,7 +171,8 @@ export function useColorLab(
   const readPixel = (event: MouseEvent<HTMLCanvasElement>) => {
     const img = event.target as HTMLCanvasElement;
     const { offsetX, offsetY } = event.nativeEvent;
-    const pixel = getImagePixel(img, offsetX, offsetY);
+    const point = bufferPoint(img, offsetX, offsetY);
+    const pixel = getImagePixel(img, point.x, point.y);
     if (!pixel) return;
 
     const [r, g, b] = pixel.data;
@@ -161,7 +207,7 @@ export function useColorLab(
   };
 
   return {
-    maxImageSize: MAX_IMAGE_SIZE,
+    frame,
     lightness,
     setLightness,
     saturation,

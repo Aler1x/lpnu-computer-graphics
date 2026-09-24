@@ -31,14 +31,11 @@ export default function ColorsPage() {
             <ImagePane
               title="Оригінальне зображення"
               empty={!lab.fileName}
-              maxSize={lab.maxImageSize}
+              frame={lab.frame}
             >
               <canvas
                 ref={originCanvas}
-                width={500}
-                height={500}
-                className="h-auto max-w-full"
-                style={{ maxHeight: lab.maxImageSize }}
+                className="block h-full w-full"
                 onMouseDown={lab.handleMouseDown}
                 onMouseMove={lab.handleMouseMove}
                 onMouseEnter={() => lab.setHoverVisible(true)}
@@ -61,14 +58,11 @@ export default function ColorsPage() {
             <ImagePane
               title="Відредаговане зображення"
               empty={!lab.fileName}
-              maxSize={lab.maxImageSize}
+              frame={lab.frame}
             >
               <canvas
                 ref={editingCanvas}
-                width={500}
-                height={500}
-                className="h-auto max-w-full"
-                style={{ maxHeight: lab.maxImageSize }}
+                className="block h-full w-full"
                 onMouseMove={lab.handleMouseMove}
                 onMouseEnter={() => lab.setHoverVisible(true)}
                 onMouseLeave={() => lab.setHoverVisible(false)}
@@ -160,12 +154,12 @@ export default function ColorsPage() {
 function ImagePane({
   title,
   empty,
-  maxSize,
+  frame,
   children,
 }: {
   title: string;
   empty: boolean;
-  maxSize: number;
+  frame: { width: number; height: number };
   children: ReactNode;
 }) {
   return (
@@ -175,14 +169,17 @@ function ImagePane({
       </CardHeader>
       <CardContent>
         {empty ? (
-          <div
-            className="grid place-items-center rounded-lg border border-dashed bg-muted/50 p-4 text-center text-sm text-muted-foreground"
-            style={{ minHeight: 200, maxWidth: maxSize }}
-          >
+          <div className="grid min-h-40 place-items-center rounded-lg border border-dashed bg-muted/50 p-4 text-center text-sm text-muted-foreground">
             Завантажте картинку кнопкою «Додати картинку»
           </div>
         ) : (
-          <div className="relative" style={{ maxWidth: maxSize }}>
+          <div
+            className="relative w-full"
+            style={{
+              maxWidth: frame.width,
+              aspectRatio: `${frame.width} / ${frame.height}`,
+            }}
+          >
             {children}
           </div>
         )}
