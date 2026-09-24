@@ -17,8 +17,8 @@ import {
    /**
     * Load the code of the vertex and fragment shaders.
     */
-   vertexCode = await (await fetch('./vertex_shader.vert')).text();
-   fragmentCode = await (await fetch('./fragment_shader.frag')).text();
+   vertexCode = await (await fetch("/fractals/vertex_shader.vert")).text();
+   fragmentCode = await (await fetch("/fractals/fragment_shader.frag")).text();
    /**
     * Create and return the WebGL program.
     */
