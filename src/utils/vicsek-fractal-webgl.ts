@@ -11,8 +11,8 @@ let vicsekVao: WebGLVertexArrayObject | null = null;
 
 async function loadShaders(): Promise<void> {
   const [v, f] = await Promise.all([
-    fetch("/vertex_shader.vert").then((r) => r.text()),
-    fetch("/vicsek_fragment_shader.frag").then((r) => r.text()),
+    fetch("/fractals/vertex_shader.vert").then((r) => r.text()),
+    fetch("/fractals/vicsek_fragment_shader.frag").then((r) => r.text()),
   ]);
   vertexCode = v;
   fragmentCode = f;

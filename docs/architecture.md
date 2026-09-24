@@ -21,9 +21,13 @@ Single-page React app with three main sections: Fractals, Colors, and Shapes. Ro
 ```
 lpnu-computer-graphics/
 ├── public/                    # Served as-is
-│   ├── vertex_shader.vert      # Shared full-screen quad (Newton + Vicsek)
-│   ├── fragment_shader.frag   # Newton fractal
-│   └── vicsek_fragment_shader.frag
+│   └── fractals/              # WebGL shaders
+│       ├── vertex_shader.vert           # Shared full-screen quad
+│       ├── fragment_shader.frag         # Newton fractal
+│       ├── vicsek_fragment_shader.frag
+│       ├── escape.frag                  # Mandelbrot, Julia, Burning Ship
+│       ├── carpet.frag                  # Sierpinski carpet
+│       └── koch.frag                    # Koch snowflake
 ├── src/
 │   ├── main.tsx               # createRoot, StrictMode, App, index.css
 │   ├── App.tsx                # BrowserRouter, top nav, Routes (/, /colors, /shapes)

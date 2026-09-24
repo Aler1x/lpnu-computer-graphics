@@ -10,7 +10,7 @@ The Vicsek fractal is a recursive figure built by subdividing the unit square in
 
 ## Implementation
 
-- **Rendering**: WebGL 2; shared full-screen quad vertex shader (`public/vertex_shader.vert`); Vicsek-specific fragment shader (`public/vicsek_fragment_shader.frag`).
+- **Rendering**: WebGL 2; shared full-screen quad vertex shader (`public/fractals/vertex_shader.vert`); Vicsek-specific fragment shader (`public/fractals/vicsek_fragment_shader.frag`).
 - **Fragment shader**: Transforms `gl_FragCoord` to world UV with `zoom` and `center`; loops up to 10 steps; at each step computes cell indices with `floor(p*3)`, discards if `(i+j)%2 != 0`, then `p = fract(p*3)`. Survivors get `fractalColor`.
 - **Module**: `src/utils/vicsek-fractal-webgl.ts` — loads shaders, creates program and VAO, sets uniforms (`width`, `height`, `iterations`, `fractalColor`, `zoom`, `center`), continuous render loop with resize handling. Exports: `initVicsekWebGL`, `setVicsekIterations`, `setVicsekColor`, `setVicsekZoom`, `setVicsekCenter`.
 
@@ -27,5 +27,5 @@ The Vicsek fractal is a recursive figure built by subdividing the unit square in
 
 - `src/utils/vicsek-fractal-webgl.ts` — WebGL init, program, VAO, render loop, uniform setters.
 - `src/components/fractals/VicsekFractal.tsx` — Canvas, WebGL init, sync of iterations/color, wheel zoom/pan.
-- `public/vertex_shader.vert` — Full-screen quad (shared with Newton).
-- `public/vicsek_fragment_shader.frag` — Vicsek subdivision and coloring.
+- `public/fractals/vertex_shader.vert` — Full-screen quad (shared with Newton).
+- `public/fractals/vicsek_fragment_shader.frag` — Vicsek subdivision and coloring.

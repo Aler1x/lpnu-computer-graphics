@@ -32,7 +32,7 @@ let vertexCode = "";
 
 async function loadVertex(): Promise<string> {
   if (vertexCode) return vertexCode;
-  vertexCode = await fetch("/vertex_shader.vert").then((response) => response.text());
+  vertexCode = await fetch("/fractals/vertex_shader.vert").then((response) => response.text());
   return vertexCode;
 }
 
