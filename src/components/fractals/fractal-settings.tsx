@@ -1,3 +1,4 @@
+import { HintPopover } from "@/components/layout/hint-popover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -41,7 +42,10 @@ export function FractalSettings({
     <div className="flex w-full flex-col gap-3 lg:w-72">
       <Card>
         <CardHeader>
-          <CardTitle>Фрактал</CardTitle>
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle>Фрактал</CardTitle>
+            <HintPopover label="Як керувати фракталом">{fractal.hint}</HintPopover>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs
@@ -56,9 +60,6 @@ export function FractalSettings({
               ))}
             </TabsList>
           </Tabs>
-          <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            {fractal.hint}
-          </p>
         </CardContent>
       </Card>
 
