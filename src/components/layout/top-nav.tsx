@@ -13,9 +13,7 @@ export function TopNav() {
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-card px-3 md:px-4">
       <div className="hidden items-center gap-2 sm:flex">
-        <span className="grid size-8 place-items-center rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
-          КГ
-        </span>
+        <img src="/favicon.svg" alt="" className="size-8" />
         <span className="text-sm font-semibold">Комп&apos;ютерна графіка</span>
       </div>
       <nav className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
