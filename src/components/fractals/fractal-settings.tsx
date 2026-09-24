@@ -1,8 +1,8 @@
 import { HintPopover } from "@/components/layout/hint-popover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FRACTAL_COLOR_LABELS,
   FRACTAL_COLORS,
@@ -48,18 +48,18 @@ export function FractalSettings({
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs
-            value={fractalId}
-            onValueChange={(value) => onFractalChange(value as FractalId)}
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              {FRACTALS.map((item) => (
-                <TabsTrigger key={item.id} value={item.id}>
-                  {item.id === "newton" ? "Ньютон" : "Вічек"}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="flex flex-wrap gap-1.5">
+            {FRACTALS.map((item) => (
+              <Button
+                key={item.id}
+                size="sm"
+                variant={item.id === fractalId ? "default" : "outline"}
+                onClick={() => onFractalChange(item.id)}
+              >
+                {item.short}
+              </Button>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
