@@ -48,9 +48,9 @@ export default function FractalsPage() {
             <VicsekFractal
               iterations={iterations}
               color={color}
-              width="500"
-              height="500"
-              className="mx-auto h-auto w-full max-w-[640px] rounded-lg border bg-white"
+              width="800"
+              height="800"
+              className="aspect-square h-auto w-full rounded-lg"
             />
           )}
         </Card>

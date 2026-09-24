@@ -2,7 +2,7 @@
 
 ## Overview
 
-Single-page React app with three main sections: Fractals, Colors, and Shapes. Routing is handled by React Router; layout is sidebar + main content. Fractals use WebGL 2; Colors and Shapes use Canvas 2D and React state.
+Single-page React app with three main sections: Fractals, Colors, and Shapes. Routing is handled by React Router; layout is a top bar plus main content. Fractals use WebGL 2; Colors and Shapes use Canvas 2D and React state.
 
 ## Tech stack
 
@@ -26,7 +26,7 @@ lpnu-computer-graphics/
 │   └── vicsek_fragment_shader.frag
 ├── src/
 │   ├── main.tsx               # createRoot, StrictMode, App, index.css
-│   ├── App.tsx                # BrowserRouter, Sidebar, Routes (/, /colors, /shapes)
+│   ├── App.tsx                # BrowserRouter, top nav, Routes (/, /colors, /shapes)
 │   ├── index.css              # Tailwind directives + custom (e.g. animations)
 │   ├── vite-env.d.ts          # Vite client types
 │   ├── pages/
@@ -35,7 +35,7 @@ lpnu-computer-graphics/
 │   │   └── Shapes.tsx         # Parallelogram state, ParallelogramContainer, ShapeParametersInput, actions
 │   ├── components/
 │   │   ├── ui/                # shadcn/ui components (Base UI primitives)
-│   │   ├── layout/            # App sidebar, page header, help dialog
+│   │   ├── layout/            # Top navigation, page header, hint popovers
 │   │   ├── fractals/          # Newton/Vicsek canvases and settings cards
 │   │   └── figures/           # Parallelogram canvas and numeric controls
 │   ├── hooks/                 # Color lab and parallelogram session state

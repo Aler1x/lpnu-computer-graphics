@@ -12,6 +12,7 @@ import {
 } from "@/utils/colors";
 
 const MAX_IMAGE_SIZE = 400;
+const DEFAULT_IMAGE = "/samples/color-template.svg";
 
 function loadImage(imagePath: string, canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext("2d");
@@ -33,10 +34,10 @@ export function useColorLab(
   const [saturation, setSaturation] = useState(1);
   const [showHoverSquare, setShowHoverSquare] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [originImage, setOriginImage] = useState<string | null>(null);
-  const [editingImage, setEditingImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>("Шаблон");
+  const [imageSrc, setImageSrc] = useState<string | null>(DEFAULT_IMAGE);
+  const [originImage, setOriginImage] = useState<string | null>(DEFAULT_IMAGE);
+  const [editingImage, setEditingImage] = useState<string | null>(DEFAULT_IMAGE);
   const [rgbValues, setRgbValues] = useState<RGBPoint>({ r: 0, g: 0, b: 0 });
   const [hslValues, setHslValues] = useState<HSLPoint>({ h: 0, s: 0, l: 0 });
   const [cmykValues, setCmykValues] = useState<CMYKPoint>({
