@@ -66,16 +66,9 @@ void main() {
   Hit h0 = refine(p, v0, v1, u_iterations);
   Hit h1 = refine(p, v1, v2, u_iterations);
   Hit h2 = refine(p, v2, v0, u_iterations);
-  Hit hit = h0;
-  if (h1.dist < hit.dist) hit = h1;
-  if (h2.dist < hit.dist) hit = h2;
-
-  vec2 edge = hit.b - hit.a;
-  float side = edge.x * (p.y - hit.a.y) - edge.y * (p.x - hit.a.x);
-  float signedDist = side >= 0.0 ? -hit.dist : hit.dist;
-
-  float aa = max(fwidth(signedDist), 1e-4);
-  float cover = smoothstep(aa * 1.15, -aa * 0.85, signedDist);
+  float dist = min(h0.dist, min(h1.dist, h2.dist));
+  float px = max(fwidth(dist), 1e-4);
+  float cover = 1.0 - smoothstep(px * 0.75, px * 1.75, dist);
 
   vec3 paper = vec3(0.96, 0.94, 0.90);
   vec3 ink = mix(vec3(0.12, 0.1, 0.08), u_color, 0.86);
