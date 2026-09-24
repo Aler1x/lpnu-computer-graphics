@@ -1,68 +1,70 @@
-import TabHeader from "@/components/TabHeader";
+import { useState } from "react";
 import NewtonFractal from "@/components/fractals/NewtonFractal";
 import VicsekFractal from "@/components/fractals/VicsekFractal";
-import FractalSettings from "@/components/fractals/Settings";
-import { useState } from "react";
+import { FractalSettings } from "@/components/fractals/fractal-settings";
+import { PageHeader } from "@/components/layout/page-header";
+import { Card } from "@/components/ui/card";
+import {
+  FRACTALS,
+  type FractalColor,
+  type FractalId,
+} from "@/lib/fractals";
 
-const colors = ["yellow", "green", "blue", "purple", "red"] as const;
-
-const FRACTAL_NAMES = ["Фрактал Ньютона", "Фрактал Вічека"] as const;
-const STEPS = [20, 10];
-const MAX = [100, 10];
-
-const FractalPage = () => {
-  const [currentFractalIndex, setCurrentFractalIndex] = useState(0);
+export default function FractalsPage() {
+  const [fractalId, setFractalId] = useState<FractalId>("newton");
   const [iterationsByFractal, setIterationsByFractal] = useState<
-    [number, number]
-  >([50, 5]);
-  const [colorIndex, setColorIndex] = useState(0);
+    Record<FractalId, number>
+  >({
+    newton: FRACTALS[0].defaultIterations,
+    vicsek: FRACTALS[1].defaultIterations,
+  });
+  const [color, setColor] = useState<FractalColor>("yellow");
 
-  const currentFractalName = FRACTAL_NAMES[currentFractalIndex];
-  const steps = STEPS[currentFractalIndex];
-  const max = MAX[currentFractalIndex];
-  const iterations = iterationsByFractal[currentFractalIndex];
-  const setIterations = (value: number | ((prev: number) => number)) => {
-    setIterationsByFractal((prev) => {
-      const next = [...prev] as [number, number];
-      next[currentFractalIndex] =
-        typeof value === "function" ? value(prev[currentFractalIndex]) : value;
-      return next;
-    });
+  const fractal = FRACTALS.find((item) => item.id === fractalId) ?? FRACTALS[0];
+  const iterations = iterationsByFractal[fractalId];
+
+  const setIterations = (value: number) => {
+    setIterationsByFractal((prev) => ({ ...prev, [fractalId]: value }));
   };
 
   return (
-    <>
-      <TabHeader title="Фрактали 🌀" subtitle={currentFractalName} />
-      <div className="flex md:flex-row flex-col gap-4">
-        {currentFractalIndex === 0 ? (
-          <NewtonFractal
-            iterations={iterations}
-            hueColor={colors[colorIndex]}
-            width="1000"
-            height="500"
-            className="w-full h-full rounded-2xl"
-          />
-        ) : (
-          <VicsekFractal iterations={iterations} color={colors[colorIndex]}
-            width="500"
-            height="500"
-            className="w-full h-full rounded-2xl border border-black"
-          />
-        )}
+    <section>
+      <PageHeader
+        title="Фрактали"
+        badge={fractal.name}
+        description="Два алгоритми на WebGL. Параметри змінюють той самий рендер, що й раніше: ітерації, колір, миша для Ньютона і масштаб для Вічека."
+      />
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+        <Card className="min-w-0 flex-1 overflow-hidden p-2">
+          {fractalId === "newton" ? (
+            <NewtonFractal
+              iterations={iterations}
+              hueColor={color}
+              width="1000"
+              height="500"
+              className="h-auto w-full rounded-lg bg-black"
+            />
+          ) : (
+            <VicsekFractal
+              iterations={iterations}
+              color={color}
+              width="500"
+              height="500"
+              className="mx-auto h-auto w-full max-w-[640px] rounded-lg border bg-white"
+            />
+          )}
+        </Card>
         <FractalSettings
-          currentFractalIndex={currentFractalIndex}
-          setCurrentFractalIndex={setCurrentFractalIndex}
+          fractalId={fractalId}
+          onFractalChange={setFractalId}
           iterations={iterations}
-          setIterations={setIterations}
-          steps={steps}
-          max={max}
-          colorIndex={colorIndex}
-          setColorIndex={setColorIndex}
-          colors={colors}
+          onIterationsChange={setIterations}
+          steps={fractal.steps}
+          max={fractal.max}
+          color={color}
+          onColorChange={setColor}
         />
       </div>
-    </>
+    </section>
   );
-};
-
-export default FractalPage;
+}

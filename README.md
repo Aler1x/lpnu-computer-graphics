@@ -7,6 +7,7 @@ Interactive web app for computer graphics: Newton and Vicsek fractals, color sch
 - **React 19** + **TypeScript**
 - **Vite 7** — build and dev server
 - **Tailwind CSS 4** — styling
+- **shadcn/ui on Base UI** — layout, controls, and dialogs
 - **React Router 6** — routing
 - **WebGL 2** — Newton and Vicsek fractal rendering
 - **Canvas 2D** — Colors page and Shapes (parallelogram) drawing
