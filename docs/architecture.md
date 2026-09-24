@@ -10,7 +10,7 @@ Single-page React app with three main sections: Fractals, Colors, and Shapes. Ro
 |------------|---------------------|--------------------------------|
 | Framework  | React 19            | StrictMode in `main.tsx`       |
 | Build      | Vite 7              | ESM, path alias `@` → `src/`    |
-| Styling    | Tailwind CSS 4      | Via `@tailwindcss/vite`        |
+| Styling    | Tailwind CSS 4 + shadcn/ui (Base UI) | Tokens in `src/index.css`, primitives in `src/components/ui` |
 | Routing    | React Router 6      | `BrowserRouter`, `Routes`      |
 | Graphics   | WebGL 2, Canvas 2D  | Shared `webgl.ts` for fractals |
 | Icons      | SVGs + vite-plugin-svgr | `?react` imports            |
@@ -34,18 +34,12 @@ lpnu-computer-graphics/
 │   │   ├── Colors.tsx         # Canvases, upload, sliders, selection, CMYK
 │   │   └── Shapes.tsx         # Parallelogram state, ParallelogramContainer, ShapeParametersInput, actions
 │   ├── components/
-│   │   ├── Sidebar.tsx        # Nav (Fractals, Colors, Shapes), Help button, HelpModal
-│   │   ├── TabHeader.tsx     # Page title + optional subtitle
-│   │   ├── ControlCard.tsx   # Styled container for controls
-│   │   ├── ProgressBar.tsx    # Range slider with label and value
-│   │   ├── HelpModal.tsx     # Contextual help text by route
-│   │   ├── fractals/
-│   │   │   ├── NewtonFractal.tsx   # Canvas, init newton-fractal, mouse, iterations, hue
-│   │   │   ├── VicsekFractal.tsx  # Canvas, init vicsek-fractal-webgl, iterations, color, wheel zoom
-│   │   │   └── Settings.tsx       # Fractal switcher, iterations slider, color tiles
-│   │   └── figures/
-│   │       ├── ParallelogramContainer.tsx  # Canvas: grid, axes, line, parallelogram
-│   │       └── ShapeParametersInput.tsx   # A/B/C coords, line (a,b), Help modal
+│   │   ├── ui/                # shadcn/ui components (Base UI primitives)
+│   │   ├── layout/            # App sidebar, page header, help dialog
+│   │   ├── fractals/          # Newton/Vicsek canvases and settings cards
+│   │   └── figures/           # Parallelogram canvas and numeric controls
+│   ├── hooks/                 # Color lab and parallelogram session state
+│   ├── lib/                   # cn, routes, help copy, fractal presets
 │   ├── utils/
 │   │   ├── webgl.ts           # createShader, createProgram, setUniform, resizeCanvasToDisplaySize
 │   │   ├── newton-fractal.ts  # Load shaders, full-screen quad, render loop, setIterations/setHueShift/setMousePos

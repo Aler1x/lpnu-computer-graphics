@@ -1,385 +1,221 @@
-import { useEffect, useRef, useState } from "react";
-import TabHeader from "@/components/TabHeader";
-import {
-  type RGBPoint,
-  type HSLPoint,
-  type CMYKPoint,
-  rgbToCmyk,
-  rgbToHsl,
-  getImagePixel,
-  adjustForColor,
-  adjustForColorSelection,
-  adjustForColorCmykAlgo,
-} from "@/utils/colors";
-import ControlCard from "@/components/ControlCard";
-import UploadImageIcon from "@/assets/icons/upload-image.svg?react";
-import ProgressBar from "@/components/ProgressBar";
+import { useRef, type ReactNode } from "react";
+import { ImagePlus } from "lucide-react";
+import { PageHeader } from "@/components/layout/page-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { useColorLab } from "@/hooks/use-color-lab";
 
-const ColorsPage = () => {
-  const originSelectionParent = useRef<HTMLDivElement>(null);
+function sliderValue(value: number | readonly number[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
+export default function ColorsPage() {
   const originCanvas = useRef<HTMLCanvasElement>(null);
   const editingCanvas = useRef<HTMLCanvasElement>(null);
-
-  const [lightness, setLightness] = useState(1.0); // [0.0] - [2.0]
-  const [saturation, setSaturation] = useState(1.0); // [0.0] - [2.0]
-  const [showHoverSquare, setShowHoverSquare] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-
-  const [fileName, setFileName] = useState<string | null>();
-  const [imageSrc, setImageSrc] = useState<string | null>();
-  const [originImage, setOriginImage] = useState<string | null>();
-  const [editingImage, setEditingImage] = useState<string | null>();
-
-  const [rgbValues, setRgbValues] = useState<RGBPoint>({ r: 0, g: 0, b: 0 });
-  const [hslValues, setHslValues] = useState<HSLPoint>({ h: 0, s: 0, l: 0 });
-  const [cmykValues, setCmykValues] = useState<CMYKPoint>({
-    c: 0,
-    m: 0,
-    y: 0,
-    k: 0,
-  });
-
-  const [selectionStart, setSelectionStart] = useState({ x: 0, y: 0 });
-  const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
-  const [isSelecting, setIsSelecting] = useState(false);
-  const [showSelection, setShowSelection] = useState(false);
-
-  const hoveredColorRGB = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
-  const hoveredColorHSL = `hsl(${hslValues.h}, ${hslValues.s}%, ${hslValues.l}%)`;
-  const hoveredColorCMYK = `cmyk(
-                            ${cmykValues.c.toFixed(2)}, 
-                            ${cmykValues.m.toFixed(2)}, 
-                            ${cmykValues.y.toFixed(2)}, 
-                            ${cmykValues.k.toFixed(2)})`;
-
-  const loadImage = (imagePath: string, canvas: HTMLCanvasElement) => {
-    const ctx = canvas?.getContext("2d");
-
-    if (!ctx) {
-      console.error("Unable to get 2D context from canvas.");
-      return;
-    }
-
-    const image = new Image();
-
-    image.onload = () => {
-      if (canvas) {
-        // not make canvas size of image because it broke site
-        // canvas.width = image.width;
-        // canvas.height = image.height;
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-      }
-    };
-    image.src = imagePath;
-  };
-
-  useEffect(() => {
-    if (
-      localStorage.getItem("colors") === "false" ||
-      (localStorage.getItem("colors") === null && cmykValues.k === 1)
-    ) {
-      localStorage.setItem("colors", "true");
-    }
-  }, [cmykValues.k]);
-
-  useEffect(() => {
-    if (showSelection && editingCanvas.current && originCanvas.current) {
-      adjustForColorSelection(
-        originCanvas.current,
-        editingCanvas.current,
-        lightness - 1,
-        saturation - 1,
-        selectionStart,
-        selectionEnd
-      );
-    } else if (editingCanvas.current && originCanvas.current) {
-      adjustForColor(
-        originCanvas.current,
-        editingCanvas.current,
-        lightness - 1,
-        saturation - 1
-      );
-    }
-  }, [lightness, saturation, selectionEnd, selectionStart, showSelection]);
-
-  useEffect(() => {
-    if (showSelection && editingCanvas.current && originCanvas.current) {
-      adjustForColorSelection(
-        originCanvas.current,
-        editingCanvas.current,
-        lightness - 1,
-        saturation - 1,
-        selectionStart,
-        selectionEnd
-      );
-    } else if (editingCanvas.current && originCanvas.current) {
-      adjustForColor(
-        originCanvas.current,
-        editingCanvas.current,
-        lightness - 1,
-        saturation - 1
-      );
-    }
-  }, [lightness, saturation, selectionEnd, selectionStart, showSelection]);
-
-  useEffect(() => {
-    // load images
-    if (originImage && originCanvas.current) {
-      loadImage(originImage, originCanvas.current);
-    }
-    if (editingImage && editingCanvas.current) {
-      loadImage(editingImage, editingCanvas.current);
-    }
-  }, [originImage, editingImage]);
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const result = String(e.target?.result);
-        setImageSrc(result);
-        setOriginImage(result);
-        setEditingImage(result);
-        setShowSelection(false);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleCmykChange = () => {
-    const origin = originCanvas.current as HTMLCanvasElement;
-    const change = editingCanvas.current as HTMLCanvasElement;
-    adjustForColorCmykAlgo(origin, change);
-  };
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (isSelecting) {
-      const { offsetX, offsetY } = event.nativeEvent;
-      setSelectionEnd({ x: offsetX, y: offsetY });
-    }
-
-    const img = event.target as HTMLCanvasElement;
-    const { offsetX, offsetY } = event.nativeEvent;
-    const { data } = getImagePixel(img, offsetX, offsetY)!;
-    const [r, g, b] = data;
-
-    setRgbValues({ r, g, b });
-    setHslValues(rgbToHsl({ r, g, b }));
-    setCmykValues(rgbToCmyk({ r, g, b }));
-
-    setCursorPos({ x: event.clientX, y: event.clientY });
-  };
-
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const { offsetX, offsetY } = event.nativeEvent;
-
-    if (showSelection) {
-      setShowSelection(false);
-    }
-    setShowSelection(true);
-    setSelectionStart({ x: offsetX, y: offsetY });
-    setSelectionEnd({ x: offsetX, y: offsetY });
-    setIsSelecting(true);
-    return;
-  };
-
-  const handleMouseUp = () => {
-    setIsSelecting(false);
-  };
-
-  const maxImageSize = 400;
+  const lab = useColorLab(originCanvas, editingCanvas);
+  const hoveredColorRGB = `rgb(${lab.rgbValues.r}, ${lab.rgbValues.g}, ${lab.rgbValues.b})`;
 
   return (
-    <div className="p-4">
-      <TabHeader title="Кольори та кольорові схеми 🎨" />
-      <div className="flex flex-row py-3 gap-6">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-row p-0.5 gap-2 h-full">
-            <div className="flex flex-row gap-4">
-              <div className="flex flex-row gap-6">
-                <div className="flex flex-col justify-start items-center h-full">
-                  <div className="flex flex-col align-center h-full">
-                    {fileName ? (
-                      <>
-                        Оригінальне зображення
-                        <div
-                          ref={originSelectionParent}
-                          className="relative max-w-full"
-                          style={{ maxWidth: maxImageSize, maxHeight: maxImageSize }}
-                        >
-                          <canvas
-                            ref={originCanvas}
-                            width={500}
-                            height={500}
-                            className="max-w-full h-auto"
-                            style={{ maxHeight: maxImageSize }}
-                            onMouseDown={(e) => handleMouseDown(e)}
-                            onMouseMove={(e) => handleMouseMove(e)}
-                            onMouseEnter={() =>
-                              setShowHoverSquare(originImage ? true : false)
-                            }
-                            onMouseLeave={() => setShowHoverSquare(false)}
-                            onMouseUp={() => handleMouseUp()}
-                            draggable={false}
-                          />
-                          {showSelection && (
-                            <div
-                              id="cmykselection"
-                              className="absolute border-4 border-dashed border-red-500 pointer-events-none"
-                              style={{
-                                left: Math.min(
-                                  selectionStart.x,
-                                  selectionEnd.x
-                                ),
-                                top: Math.min(
-                                  selectionStart.y,
-                                  selectionEnd.y
-                                ),
-                                width: Math.abs(
-                                  selectionEnd.x - selectionStart.x
-                                ),
-                                height: Math.abs(
-                                  selectionEnd.y - selectionStart.y
-                                ),
-                              }}
-                            />
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        Зображення не вибрано
-                        <div className="flex justify-center items-center text-center bg-gray-300 h-full p-2 rounded-lg min-h-[200px] max-w-full" style={{ maxWidth: maxImageSize, maxHeight: maxImageSize }}>
-                          Завантажте картинку, клацнувши на відповідну кнопку
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col justify-start items-center h-full">
-                  <div className="flex flex-col align-center h-full">
-                    {fileName ? (
-                      <>
-                        Відредаговане зображення
-                        <div className="max-w-full" style={{ maxWidth: maxImageSize, maxHeight: maxImageSize }}>
-                          <canvas
-                            ref={editingCanvas}
-                            width={500}
-                            height={500}
-                            className="max-w-full h-auto"
-                            style={{ maxHeight: maxImageSize }}
-                            onMouseMove={(e) => handleMouseMove(e)}
-                            onMouseEnter={() =>
-                              setShowHoverSquare(originImage ? true : false)
-                            }
-                            onMouseLeave={() => setShowHoverSquare(false)}
-                            draggable={false}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        Зображення не вибрано
-                        <div className="flex justify-center items-center text-center bg-gray-300 h-full p-2 rounded-lg min-h-[200px] max-w-full" style={{ maxWidth: maxImageSize, maxHeight: maxImageSize }}>
-                          Завантажте картинку, клацнувши на відповідну кнопку
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+    <section>
+      <PageHeader
+        title="Кольори та кольорові схеми"
+        description="Завантажте зображення, змініть світлість і насиченість, виділіть область на оригіналі або застосуйте CMYK. Наведення показує колір пікселя."
+      />
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <div className="grid gap-4 md:grid-cols-2">
+            <ImagePane
+              title="Оригінальне зображення"
+              empty={!lab.fileName}
+              maxSize={lab.maxImageSize}
+            >
+              <canvas
+                ref={originCanvas}
+                width={500}
+                height={500}
+                className="h-auto max-w-full"
+                style={{ maxHeight: lab.maxImageSize }}
+                onMouseDown={lab.handleMouseDown}
+                onMouseMove={lab.handleMouseMove}
+                onMouseEnter={() => lab.setHoverVisible(true)}
+                onMouseLeave={() => lab.setHoverVisible(false)}
+                onMouseUp={lab.handleMouseUp}
+                draggable={false}
+              />
+              {lab.showSelection ? (
+                <div
+                  className="pointer-events-none absolute border-2 border-dashed border-destructive"
+                  style={{
+                    left: Math.min(lab.selectionStart.x, lab.selectionEnd.x),
+                    top: Math.min(lab.selectionStart.y, lab.selectionEnd.y),
+                    width: Math.abs(lab.selectionEnd.x - lab.selectionStart.x),
+                    height: Math.abs(lab.selectionEnd.y - lab.selectionStart.y),
+                  }}
+                />
+              ) : null}
+            </ImagePane>
+            <ImagePane
+              title="Відредаговане зображення"
+              empty={!lab.fileName}
+              maxSize={lab.maxImageSize}
+            >
+              <canvas
+                ref={editingCanvas}
+                width={500}
+                height={500}
+                className="h-auto max-w-full"
+                style={{ maxHeight: lab.maxImageSize }}
+                onMouseMove={lab.handleMouseMove}
+                onMouseEnter={() => lab.setHoverVisible(true)}
+                onMouseLeave={() => lab.setHoverVisible(false)}
+                draggable={false}
+              />
+            </ImagePane>
           </div>
-          {!imageSrc && (
-            <div className="flex w-full justify-center items-center">
-              <p className="text-center m-2">
-                Оберіть зображення, щоб змінювати кольори.
-              </p>
+          {lab.imageSrc ? (
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="outline">
+                HSL {lab.hslValues.h.toFixed(0)}°, {lab.hslValues.s.toFixed(0)}%,{" "}
+                {lab.hslValues.l.toFixed(0)}%
+              </Badge>
+              <Badge variant="outline">{hoveredColorRGB}</Badge>
+              <Badge variant="outline">
+                CMYK {lab.cmykValues.c.toFixed(2)} {lab.cmykValues.m.toFixed(2)}{" "}
+                {lab.cmykValues.y.toFixed(2)} {lab.cmykValues.k.toFixed(2)}
+              </Badge>
             </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Оберіть зображення, щоб змінювати кольори.
+            </p>
           )}
-          <div className="flex flex-row gap-2 text-sm items-center">
-            {imageSrc && (
-              <>
-                <ControlCard>
-                  <div className="p-1">{hoveredColorHSL}</div>
-                </ControlCard>
-                <ControlCard>
-                  <div className="p-1">{hoveredColorRGB}</div>
-                </ControlCard>
-                <ControlCard>
-                  <div className="px-1 py-0.5">{hoveredColorCMYK}</div>
-                </ControlCard>
-              </>
-            )}
-          </div>
         </div>
-        <div className="flex flex-col p-0.5 gap-2">
-          <ControlCard>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ display: "none", color: "#2c3639" }}
-              id="image-upload"
-            />
-            <label
-              htmlFor="image-upload"
-              className="flex flex-row gap-2 text-sm items-center cursor-pointer"
-            >
-              <UploadImageIcon className="w-8 h-8" />
-              Додати картинку
-            </label>
-          </ControlCard>
-          <ControlCard>
-            <ProgressBar
-              progressState={[lightness, setLightness]}
-              steps={40}
-              max={2}
-              toFixed={2}
+
+        <Card className="w-full xl:w-72">
+          <CardHeader>
+            <CardTitle>Корекція</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-5">
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                id="image-upload"
+                className="sr-only"
+                onChange={lab.handleImageUpload}
+              />
+              <Button
+                variant="outline"
+                className="w-full"
+                render={<label htmlFor="image-upload" />}
+              >
+                <ImagePlus data-icon="inline-start" />
+                Додати картинку
+              </Button>
+              {lab.fileName ? (
+                <p className="mt-2 truncate text-xs text-muted-foreground">
+                  {lab.fileName}
+                </p>
+              ) : null}
+            </div>
+            <Adjustment
+              id="lightness"
               title="Світота"
+              value={lab.lightness}
+              onChange={lab.setLightness}
             />
-          </ControlCard>
-          <ControlCard>
-            <ProgressBar
-              progressState={[saturation, setSaturation]}
-              steps={40}
-              max={2}
-              toFixed={2}
+            <Adjustment
+              id="saturation"
               title="Насиченість"
+              value={lab.saturation}
+              onChange={lab.setSaturation}
             />
-          </ControlCard>
-          <ControlCard>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleCmykChange}
-              style={{ display: "none", color: "#2c3639" }}
-              id="cmyk-apply"
-            />
-            <label
-              htmlFor="cmyk-apply"
-              className="flex flex-row gap-2 text-sm items-center cursor-pointer"
+            <Button
+              className="w-full"
+              disabled={!lab.imageSrc}
+              onClick={lab.handleCmykChange}
             >
-              Застосувати зміни CMYK
-            </label>
-          </ControlCard>
-        </div>
+              Застосувати CMYK
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-      {showHoverSquare && (
+      {lab.showHoverSquare ? (
         <div
-          className="fixed w-5 h-5 border border-black pointer-events-none z-[1000] rounded"
+          className="pointer-events-none fixed z-50 size-5 rounded-md border border-foreground"
           style={{
             backgroundColor: hoveredColorRGB,
-            left: `${cursorPos.x + 10}px`,
-            top: `${cursorPos.y + 10}px`,
+            left: `${lab.cursorPos.x + 12}px`,
+            top: `${lab.cursorPos.y + 12}px`,
           }}
-        ></div>
-      )}
+        />
+      ) : null}
+    </section>
+  );
+}
+
+function ImagePane({
+  title,
+  empty,
+  maxSize,
+  children,
+}: {
+  title: string;
+  empty: boolean;
+  maxSize: number;
+  children: ReactNode;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {empty ? (
+          <div
+            className="grid place-items-center rounded-lg border border-dashed bg-muted/50 p-4 text-center text-sm text-muted-foreground"
+            style={{ minHeight: 200, maxWidth: maxSize }}
+          >
+            Завантажте картинку кнопкою «Додати картинку»
+          </div>
+        ) : (
+          <div className="relative" style={{ maxWidth: maxSize }}>
+            {children}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function Adjustment({
+  id,
+  title,
+  value,
+  onChange,
+}: {
+  id: string;
+  title: string;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <Label htmlFor={id}>{title}</Label>
+        <span className="text-sm tabular-nums">{value.toFixed(2)}</span>
+      </div>
+      <Slider
+        id={id}
+        min={0}
+        max={2}
+        step={2 / 40}
+        value={[value]}
+        onValueChange={(next) => onChange(sliderValue(next))}
+      />
     </div>
   );
-};
-
-export default ColorsPage;
+}

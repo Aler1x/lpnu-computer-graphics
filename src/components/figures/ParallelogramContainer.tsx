@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 interface ParallelogramContainerProps {
   parallelogram: number[][];
   line: number[];
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
 }
 
 export const ParallelogramContainer = ({
@@ -119,7 +119,7 @@ export const ParallelogramContainer = ({
   }, [drawParallelogram, parallelogram, line, drawLine, canvasRef]);
 
   return (
-    <div className="flex justify-center items-center bg-gray-300 rounded-lg max-w-[500px] max-h-[500px]">
+    <div className="flex max-h-[500px] max-w-[500px] items-center justify-center overflow-hidden rounded-xl border bg-card shadow-sm">
       <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
     </div>
   );
