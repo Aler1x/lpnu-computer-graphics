@@ -11,12 +11,14 @@ export const App = () => {
       <TooltipProvider>
         <div className="flex h-svh flex-col overflow-hidden bg-background">
           <TopNav />
-          <main className="min-h-0 flex-1 overflow-auto p-4 md:p-6">
+          <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-4 md:p-6">
+            <div className="min-h-0 flex-1 overflow-auto">
             <Routes>
               <Route path="/" element={<FractalsPage />} />
               <Route path="/colors" element={<ColorsPage />} />
               <Route path="/shapes" element={<ShapesPage />} />
             </Routes>
+            </div>
           </main>
         </div>
       </TooltipProvider>

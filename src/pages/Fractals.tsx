@@ -28,31 +28,33 @@ export default function FractalsPage() {
   };
 
   return (
-    <section>
+    <section className="flex h-full min-h-0 flex-col overflow-hidden">
       <PageHeader
         title="Фрактали"
         badge={fractal.name}
         description="Два алгоритми на WebGL. Параметри змінюють той самий рендер, що й раніше: ітерації, колір, миша для Ньютона і масштаб для Вічека."
       />
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        <Card className="min-w-0 flex-1 overflow-hidden p-2">
-          {fractalId === "newton" ? (
-            <NewtonFractal
-              iterations={iterations}
-              hueColor={color}
-              width="1000"
-              height="500"
-              className="h-auto w-full touch-none rounded-lg bg-black"
-            />
-          ) : (
-            <VicsekFractal
-              iterations={iterations}
-              color={color}
-              width="800"
-              height="800"
-              className="aspect-square h-auto w-full touch-none rounded-lg"
-            />
-          )}
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden lg:flex-row">
+        <Card className="relative min-h-0 min-w-0 flex-1 overflow-hidden p-2">
+          <div className="relative h-full w-full">
+            {fractalId === "newton" ? (
+              <NewtonFractal
+                iterations={iterations}
+                hueColor={color}
+                width="1000"
+                height="500"
+                className="absolute inset-0 m-auto h-auto max-h-full w-full touch-none rounded-lg bg-black"
+              />
+            ) : (
+              <VicsekFractal
+                iterations={iterations}
+                color={color}
+                width="800"
+                height="800"
+                className="absolute inset-0 m-auto aspect-square h-auto max-h-full w-auto max-w-full touch-none rounded-lg"
+              />
+            )}
+          </div>
         </Card>
         <FractalSettings
           fractalId={fractalId}

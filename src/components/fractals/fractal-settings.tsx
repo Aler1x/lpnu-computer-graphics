@@ -39,7 +39,7 @@ export function FractalSettings({
   const fractal = FRACTALS.find((item) => item.id === fractalId) ?? FRACTALS[0];
 
   return (
-    <div className="flex w-full flex-col gap-3 lg:w-72">
+    <div className="flex w-full shrink-0 flex-col gap-3 lg:max-h-full lg:w-72 lg:overflow-y-auto">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between gap-2">
