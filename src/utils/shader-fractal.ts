@@ -1,9 +1,20 @@
 import {
   createProgram,
   createShader,
-  resizeCanvasToDisplaySize,
   setUniform,
 } from "./webgl";
+
+function resizeForDisplay(canvas: HTMLCanvasElement) {
+  const density = Math.min(window.devicePixelRatio || 1, 2);
+  const width = Math.max(1, Math.round(canvas.clientWidth * density));
+  const height = Math.max(1, Math.round(canvas.clientHeight * density));
+  const changed = canvas.width !== width || canvas.height !== height;
+  if (changed) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  return changed;
+}
 
 const QUAD = new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]);
 
@@ -55,7 +66,7 @@ export async function mountShaderFractal(
 
   const draw = () => {
     if (!running) return;
-    if (resizeCanvasToDisplaySize(canvas)) {
+    if (resizeForDisplay(canvas)) {
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       setUniform(gl, program, "2f", "u_resolution", [
         gl.drawingBufferWidth,
@@ -69,7 +80,7 @@ export async function mountShaderFractal(
   };
 
   gl.useProgram(program);
-  resizeCanvasToDisplaySize(canvas);
+  resizeForDisplay(canvas);
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
   setUniform(gl, program, "2f", "u_resolution", [
     gl.drawingBufferWidth,
