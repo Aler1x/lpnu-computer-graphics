@@ -2,7 +2,8 @@ import { useRef, type ReactNode } from "react";
 import { ImagePlus } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -107,14 +108,13 @@ export default function ColorsPage() {
                 className="sr-only"
                 onChange={lab.handleImageUpload}
               />
-              <Button
-                variant="outline"
-                className="w-full"
-                render={<label htmlFor="image-upload" />}
+              <label
+                htmlFor="image-upload"
+                className={cn(buttonVariants({ variant: "outline" }), "w-full")}
               >
                 <ImagePlus data-icon="inline-start" />
                 Додати картинку
-              </Button>
+              </label>
               {lab.fileName ? (
                 <p className="mt-2 truncate text-xs text-muted-foreground">
                   {lab.fileName}
