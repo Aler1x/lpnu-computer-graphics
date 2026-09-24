@@ -47,9 +47,15 @@ const NewtonFractal = ({
       setMousePos(gl, mousePosX, e.clientY - mousePosY);
     };
 
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
     document.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("wheel", onWheel);
     };
   }, []);
 

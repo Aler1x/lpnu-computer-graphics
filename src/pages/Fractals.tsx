@@ -42,7 +42,7 @@ export default function FractalsPage() {
               hueColor={color}
               width="1000"
               height="500"
-              className="h-auto w-full rounded-lg bg-black"
+              className="h-auto w-full touch-none rounded-lg bg-black"
             />
           ) : (
             <VicsekFractal
@@ -50,7 +50,7 @@ export default function FractalsPage() {
               color={color}
               width="800"
               height="800"
-              className="aspect-square h-auto w-full rounded-lg"
+              className="aspect-square h-auto w-full touch-none rounded-lg"
             />
           )}
         </Card>

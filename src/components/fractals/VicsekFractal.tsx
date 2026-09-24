@@ -65,6 +65,7 @@ const VicsekFractal = ({
 
     let throttle: number | null = null;
     const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
       if (throttle !== null) return;
       const rect = canvas.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
@@ -90,7 +91,7 @@ const VicsekFractal = ({
       }, 50);
     };
 
-    canvas.addEventListener("wheel", onWheel, { passive: true });
+    canvas.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       canvas.removeEventListener("wheel", onWheel);
       if (throttle !== null) clearTimeout(throttle);
